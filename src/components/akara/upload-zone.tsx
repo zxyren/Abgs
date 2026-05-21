@@ -48,11 +48,11 @@ export function UploadZone({ compact = false }: { compact?: boolean }) {
     return (
       <div
         {...getRootProps()}
-        className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-soft transition hover:opacity-90"
+        className="inline-flex cursor-pointer items-center gap-2 rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-soft transition hover:opacity-90"
       >
         <input {...getInputProps()} {...({ webkitdirectory: "" } as any)} />
-        <Upload className="h-4 w-4" />
-        <span>Upload fonts</span>
+        <Upload size={16} />
+        <span className="font-semibold">Upload fonts</span>
       </div>
     );
   }
@@ -70,8 +70,8 @@ export function UploadZone({ compact = false }: { compact?: boolean }) {
       } shadow-soft`}
     >
       <input {...getInputProps()} {...({ webkitdirectory: "" } as any)} />
-      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-float">
-        <Upload className="h-6 w-6" />
+      <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-lg bg-primary/20 border border-primary/30 text-primary shadow-float">
+        <Upload size={24} />
       </div>
       <h2 className="text-2xl font-semibold tracking-tight">Drop your fonts here</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">

@@ -1,6 +1,7 @@
 import { useFontStore, type ViewMode, type SortKey } from "@/store/font-store";
 import { Search, LayoutGrid, List, Rows3, Maximize, Sun, Moon, Command } from "lucide-react";
 import { UploadZone } from "./upload-zone";
+import { Button } from "../ui/button";
 
 const views: { key: ViewMode; icon: any; label: string }[] = [
   { key: "grid", icon: LayoutGrid, label: "Grid" },
@@ -11,7 +12,7 @@ const views: { key: ViewMode; icon: any; label: string }[] = [
 
 const sorts: { key: SortKey; label: string }[] = [
   { key: "recent", label: "Recent" },
-  { key: "name", label: "A–Z" },
+  { key: "name", label: "A-Z" },
   { key: "size", label: "Size" },
 ];
 
@@ -19,12 +20,10 @@ export function Toolbar() {
   const s = useFontStore();
   return (
     <div className="sticky top-4 z-30 mx-auto mb-6 max-w-7xl px-4">
-      <div className="glass flex flex-wrap items-center gap-2 rounded-2xl border border-border p-2 shadow-soft">
-        <div className="flex items-center gap-2 pl-2 pr-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground text-background text-xs font-bold">
-            A
-          </div>
-          <span className="text-sm font-semibold tracking-tight">Akara</span>
+      <div className="glass flex flex-wrap items-center gap-2 rounded-lg border border-border p-2 shadow-soft">
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" alt="Abgs logo" className="h-11 w-11" />
+          <span className="font-semibold tracking-tight">Abgs</span>
         </div>
         <div className="mx-1 h-6 w-px bg-border" />
 
@@ -34,14 +33,14 @@ export function Toolbar() {
             value={s.search}
             onChange={(e) => s.set({ search: e.target.value })}
             placeholder="Search fonts…  (⌘K for command palette)"
-            className="h-10 w-full rounded-xl border border-transparent bg-secondary/60 pl-9 pr-3 text-sm outline-none transition focus:border-border focus:bg-background"
+            className="h-10 w-full rounded-sm border border-transparent bg-secondary/60 pl-9 pr-3 text-sm outline-none transition focus:border-border focus:bg-background"
           />
         </div>
 
         <select
           value={s.sort}
           onChange={(e) => s.set({ sort: e.target.value as SortKey })}
-          className="h-10 rounded-xl border border-border bg-background px-3 text-sm"
+          className="h-10 rounded-sm border border-border bg-background px-3 text-sm"
         >
           {sorts.map((x) => (
             <option key={x.key} value={x.key}>
@@ -53,7 +52,7 @@ export function Toolbar() {
         <select
           value={s.filterFormat ?? ""}
           onChange={(e) => s.set({ filterFormat: e.target.value || null })}
-          className="h-10 rounded-xl border border-border bg-background px-3 text-sm"
+          className="h-10 rounded-sm border border-border bg-background px-3 text-sm"
         >
           <option value="">All formats</option>
           {["ttf", "otf", "woff", "woff2", "eot", "ttc", "fon"].map((f) => (
@@ -63,43 +62,47 @@ export function Toolbar() {
           ))}
         </select>
 
-        <div className="flex h-10 items-center rounded-xl border border-border bg-background p-1">
+        <div className="flex h-10 items-center rounded-sm border border-border bg-background p-1">
           {views.map((v) => (
             <button
               key={v.key}
               title={v.label}
               onClick={() => s.set({ view: v.key })}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
+              className={`flex h-8 w-8 items-center justify-center rounded-sm cursor-pointer transition ${
                 s.view === v.key
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <v.icon className="h-4 w-4" />
+              <v.icon size={16} />
             </button>
           ))}
         </div>
 
-        <button
+        <Button
+          size="icon"
+          variant="outline"
           onClick={() => s.set({ paletteOpen: true })}
           title="Command palette"
-          className="flex h-10 items-center gap-1.5 rounded-xl border border-border bg-background px-3 text-sm hover:bg-accent"
+          className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
         >
-          <Command className="h-4 w-4" />
-        </button>
+          <Command size={16} />
+        </Button>
 
-        <button
+        <Button
+          size="icon"
+          variant="outline"
           onClick={() => {
             const next = s.theme === "dark" ? "light" : "dark";
             s.set({ theme: next });
             document.documentElement.classList.toggle("dark", next === "dark");
             localStorage.setItem("akara:theme", next);
           }}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background hover:bg-accent"
+          className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
           title="Toggle theme"
         >
-          {s.theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </button>
+          {s.theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+        </Button>
 
         <UploadZone compact />
       </div>

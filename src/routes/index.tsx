@@ -79,9 +79,7 @@ function Index() {
 
       <div className="mx-auto max-w-7xl px-4 pt-8">
         <div className="mb-10 text-center">
-          <p className="mb-2 text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Typography preview studio
-          </p>
+          <p className="mb-2 text-sm text-muted-foreground">Typography preview studio</p>
           <h1 className="text-balance text-5xl font-semibold tracking-tight md:text-6xl">
             Your fonts, beautifully organized.
           </h1>
