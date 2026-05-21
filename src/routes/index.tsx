@@ -73,7 +73,7 @@ function Index() {
       <CompareBar onOpen={() => setCompareOpen(true)} />
       <CompareModal open={compareOpen} onClose={() => setCompareOpen(false)} />
 
-      <div className="pt-4">
+      <div className="pt-4 sticky top-0 z-10">
         <Toolbar />
       </div>
 
