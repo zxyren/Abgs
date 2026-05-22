@@ -1,9 +1,20 @@
 import { useFontStore, type ViewMode, type SortKey } from "@/store/font-store";
-import { Search, LayoutGrid, List, Rows3, Maximize, Sun, Moon, Command } from "lucide-react";
+import {
+  type LucideIcon,
+  Search,
+  LayoutGrid,
+  List,
+  Rows3,
+  Maximize,
+  Sun,
+  Moon,
+  Command,
+} from "lucide-react";
 import { UploadZone } from "./upload-zone";
 import { Button } from "../ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
-const views: { key: ViewMode; icon: any; label: string }[] = [
+const views: { key: ViewMode; icon: LucideIcon; label: string }[] = [
   { key: "grid", icon: LayoutGrid, label: "Grid" },
   { key: "list", icon: List, label: "List" },
   { key: "compact", icon: Rows3, label: "Compact" },
@@ -22,7 +33,7 @@ export function Toolbar() {
     <div className="sticky top-4 z-30 mx-auto mb-6 max-w-7xl px-4">
       <div className="glass flex flex-wrap items-center gap-2 rounded-lg border border-border p-4 shadow-soft">
         <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="Abgs logo" className="h-11 w-11" />
+          <img src="/logo.png" alt="Abgs logo" className="h-11 w-11 drop-shadow-sm" />
           <span className="font-semibold tracking-tight">Abgs</span>
         </div>
         <div className="mx-1 h-6 w-px bg-border" />
@@ -62,22 +73,28 @@ export function Toolbar() {
           ))}
         </select>
 
-        <div className="flex h-10 items-center rounded-sm border border-border bg-background p-1">
-          {views.map((v) => (
-            <button
-              key={v.key}
-              title={v.label}
-              onClick={() => s.set({ view: v.key })}
-              className={`flex h-8 w-8 items-center justify-center rounded-sm cursor-pointer transition ${
-                s.view === v.key
-                  ? "bg-foreground text-background"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <v.icon size={16} />
-            </button>
-          ))}
-        </div>
+        <TooltipProvider>
+          <div className="flex h-10 items-center rounded-sm border border-border bg-background p-1">
+            {views.map((v) => (
+              <Tooltip key={v.key}>
+                <TooltipTrigger asChild>
+                  <button
+                    aria-label={v.label}
+                    onClick={() => s.set({ view: v.key })}
+                    className={`flex h-8 w-8 items-center justify-center rounded-sm cursor-pointer transition ${
+                      s.view === v.key
+                        ? "bg-foreground text-background"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <v.icon size={16} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top">{v.label}</TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+        </TooltipProvider>
 
         <Button
           size="icon"
