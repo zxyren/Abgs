@@ -7,7 +7,7 @@ import { toast } from "sonner";
 interface Props {
   font: FontItem;
   onOpen: (id: string) => void;
-  view: "grid" | "list" | "compact" | "showcase";
+  view: "grid" | "list" | "compact";
 }
 
 export function FontCard({ font, onOpen, view }: Props) {
@@ -18,8 +18,7 @@ export function FontCard({ font, onOpen, view }: Props) {
   const selected = useFontStore((s) => s.selected.includes(font.id));
 
   const sample = previewText || font.originalName;
-  const baseSize =
-    view === "compact" ? 24 : view === "showcase" ? 48 : view === "list" ? 36 : fontSize;
+  const baseSize = view === "compact" ? 24 : view === "list" ? 36 : fontSize;
 
   function copyName() {
     navigator.clipboard.writeText(font.originalName);
@@ -46,7 +45,7 @@ export function FontCard({ font, onOpen, view }: Props) {
             letterSpacing: `${letterSpacing}px`,
             fontWeight: weight,
             textAlign: align,
-            minHeight: view === "compact" ? 80 : view === "showcase" ? 220 : 140,
+            minHeight: view === "compact" ? 80 : 140,
           }}
         >
           <span className="block truncate-multiline">{sample}</span>

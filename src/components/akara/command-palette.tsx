@@ -128,15 +128,7 @@ export function CommandPalette() {
                   >
                     Compact view
                   </Item>
-                  <Item
-                    icon={Maximize}
-                    onSelect={() => {
-                      s.set({ view: "showcase" });
-                      close();
-                    }}
-                  >
-                    Showcase view
-                  </Item>
+
                 </Command.Group>
                 <Command.Group
                   heading="Fonts"

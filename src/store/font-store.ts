@@ -12,7 +12,7 @@ export interface FontItem {
   tags: string[];
 }
 
-export type ViewMode = "grid" | "list" | "compact" | "showcase";
+export type ViewMode = "grid" | "list" | "compact";
 export type SortKey = "name" | "recent" | "size";
 
 interface State {

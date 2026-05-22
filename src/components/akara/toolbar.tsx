@@ -18,7 +18,6 @@ const views: { key: ViewMode; icon: LucideIcon; label: string }[] = [
   { key: "grid", icon: LayoutGrid, label: "Grid" },
   { key: "list", icon: List, label: "List" },
   { key: "compact", icon: Rows3, label: "Compact" },
-  { key: "showcase", icon: Maximize, label: "Showcase" },
 ];
 
 const sorts: { key: SortKey; label: string }[] = [
