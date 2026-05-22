@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 import { AnimatePresence } from "framer-motion";
@@ -12,11 +11,7 @@ import { FontDetail } from "@/components/akara/font-detail";
 import { CommandPalette } from "@/components/akara/command-palette";
 import { CompareBar, CompareModal } from "@/components/akara/compare-bar";
 
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-function Index() {
+export function Index() {
   const s = useFontStore();
   const hydrated = useFontStore((state) => state.hydrated);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -30,7 +25,10 @@ function Index() {
 
   const fuse = useMemo(
     () =>
-      new Fuse(s.fonts, { keys: ["originalName", "family", "format", "tags"], threshold: 0.35 }),
+      new Fuse(s.fonts, {
+        keys: ["originalName", "family", "format", "tags"],
+        threshold: 0.35,
+      }),
     [s.fonts],
   );
 
@@ -77,13 +75,15 @@ function Index() {
 
       <div className="mx-auto max-w-7xl px-4 pt-8">
         <div className="mb-10 text-center">
-          <p className="mb-2 text-sm text-muted-foreground">Typography preview studio</p>
+          <p className="mb-2 text-sm text-muted-foreground">
+            Typography preview studio
+          </p>
           <h1 className="text-balance text-5xl font-semibold tracking-tight md:text-6xl">
             Your fonts, beautifully organized.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-balance text-muted-foreground">
-            Drop a folder. Preview thousands. Compare side-by-side. Akara runs entirely in your
-            browser.
+            Drop a folder. Preview thousands. Compare side-by-side. Akara runs
+            entirely in your browser.
           </p>
         </div>
 
@@ -91,14 +91,16 @@ function Index() {
 
         {s.fonts.length === 0 ? (
           <div className="mt-10 grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
-            {["Live preview", "Side-by-side", "Glyph viewer", "⌘K palette"].map((x) => (
-              <div
-                key={x}
-                className="rounded-2xl border border-border bg-card px-4 py-3 text-center text-muted-foreground shadow-soft"
-              >
-                {x}
-              </div>
-            ))}
+            {["Live preview", "Side-by-side", "Glyph viewer", "⌘K palette"].map(
+              (x) => (
+                <div
+                  key={x}
+                  className="rounded-2xl border border-border bg-card px-4 py-3 text-center text-muted-foreground shadow-soft"
+                >
+                  {x}
+                </div>
+              ),
+            )}
           </div>
         ) : (
           <>
@@ -106,13 +108,19 @@ function Index() {
             <div className="mx-auto max-w-7xl px-4">
               <div className="mb-3 flex items-end justify-between">
                 <h2 className="text-sm text-muted-foreground">
-                  {visible.length} of {s.fonts.length} font{s.fonts.length === 1 ? "" : "s"}
+                  {visible.length} of {s.fonts.length} font
+                  {s.fonts.length === 1 ? "" : "s"}
                 </h2>
               </div>
               <div className={`grid gap-4 ${gridClass}`}>
                 <AnimatePresence mode="popLayout">
                   {visible.map((f) => (
-                    <FontCard key={f.id} font={f} onOpen={setOpenId} view={s.view} />
+                    <FontCard
+                      key={f.id}
+                      font={f}
+                      onOpen={setOpenId}
+                      view={s.view}
+                    />
                   ))}
                 </AnimatePresence>
               </div>
