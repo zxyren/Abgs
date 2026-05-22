@@ -87,7 +87,7 @@ function Index() {
           </p>
         </div>
 
-        <UploadZone compact={s.fonts.length > 0} />
+        <UploadZone />
 
         {s.fonts.length === 0 ? (
           <div className="mt-10 grid grid-cols-2 gap-3 text-sm md:grid-cols-4">

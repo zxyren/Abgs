@@ -1,12 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useFontStore } from "@/store/font-store";
+import { useFontStore, type FontItem } from "@/store/font-store";
 import { X } from "lucide-react";
 
 export function CompareBar({ onOpen }: { onOpen: () => void }) {
   const selected = useFontStore((s) => s.selected);
   const fonts = useFontStore((s) => s.fonts);
   const clear = useFontStore((s) => s.clearSelected);
-  const items = selected.map((id) => fonts.find((f) => f.id === id)).filter(Boolean) as any[];
+  const items = selected
+    .map((id) => fonts.find((f) => f.id === id))
+    .filter((item): item is FontItem => item !== undefined);
 
   return (
     <AnimatePresence>
@@ -19,10 +21,16 @@ export function CompareBar({ onOpen }: { onOpen: () => void }) {
         >
           <div className="glass flex items-center gap-2 rounded-full border border-border p-2 pl-4 shadow-float">
             <span className="text-sm text-muted-foreground">{items.length} selected</span>
-            <button onClick={onOpen} className="rounded-full bg-foreground px-4 py-1.5 text-sm font-medium text-background">
+            <button
+              onClick={onOpen}
+              className="rounded-full bg-foreground px-4 py-1.5 text-sm font-medium text-background"
+            >
               Compare side-by-side
             </button>
-            <button onClick={clear} className="rounded-full p-1.5 text-muted-foreground hover:bg-accent">
+            <button
+              onClick={clear}
+              className="rounded-full p-1.5 text-muted-foreground hover:bg-accent"
+            >
               <X className="h-4 w-4" />
             </button>
           </div>
@@ -36,33 +44,47 @@ export function CompareModal({ open, onClose }: { open: boolean; onClose: () => 
   const selected = useFontStore((s) => s.selected);
   const fonts = useFontStore((s) => s.fonts);
   const { previewText, fontSize, weight, lineHeight, letterSpacing } = useFontStore();
-  const items = selected.map((id) => fonts.find((f) => f.id === id)).filter(Boolean) as any[];
+  const items = selected
+    .map((id) => fonts.find((f) => f.id === id))
+    .filter((item): item is FontItem => item !== undefined);
 
   return (
     <AnimatePresence>
       {open && items.length >= 2 && (
         <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 p-4 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
-            initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 10, opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 10, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
             className="flex h-[88vh] w-full max-w-7xl flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-float"
           >
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
               <h2 className="text-lg font-semibold">Side-by-side comparison</h2>
-              <button onClick={onClose} className="rounded-lg p-2 hover:bg-accent"><X className="h-4 w-4" /></button>
+              <button onClick={onClose} className="rounded-lg p-2 hover:bg-accent">
+                <X className="h-4 w-4" />
+              </button>
             </div>
-            <div className="grid flex-1 overflow-auto" style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
+            <div
+              className="grid flex-1 overflow-auto"
+              style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
+            >
               {items.map((f) => (
                 <div key={f.id} className="border-r border-border p-6 last:border-r-0">
                   <div className="mb-4 text-xs text-muted-foreground">{f.originalName}</div>
                   <div
                     style={{
                       fontFamily: `"${f.family}", system-ui`,
-                      fontSize, fontWeight: weight, lineHeight, letterSpacing: `${letterSpacing}px`,
+                      fontSize,
+                      fontWeight: weight,
+                      lineHeight,
+                      letterSpacing: `${letterSpacing}px`,
                     }}
                   >
                     {previewText}

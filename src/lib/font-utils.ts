@@ -1,4 +1,4 @@
-const SUPPORTED = ["ttf","otf","woff","woff2","eot","ttc","fon"];
+const SUPPORTED = ["ttf", "otf", "woff", "woff2", "eot", "ttc", "fon"];
 
 export function isFontFile(name: string) {
   const ext = name.split(".").pop()?.toLowerCase() ?? "";
@@ -26,7 +26,8 @@ export async function loadFont(family: string, data: ArrayBuffer) {
   try {
     const face = new FontFace(family, data);
     await face.load();
-    (document as any).fonts.add(face);
+    const doc = document as Document & { fonts: FontFaceSet };
+    doc.fonts.add(face);
     loaded.set(family, face);
   } catch (e) {
     console.warn("Failed to load font", family, e);
@@ -36,7 +37,8 @@ export async function loadFont(family: string, data: ArrayBuffer) {
 export function unloadFont(family: string) {
   const face = loaded.get(family);
   if (face) {
-    (document as any).fonts.delete(face);
+    const doc = document as Document & { fonts: FontFaceSet };
+    doc.fonts.delete(face);
     loaded.delete(family);
   }
 }

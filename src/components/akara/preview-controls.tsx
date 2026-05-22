@@ -52,14 +52,16 @@ export function PreviewControls() {
               <label className="text-xs font-medium text-muted-foreground">Align</label>
             </div>
             <div className="flex h-9 rounded-lg border border-border bg-background p-1">
-              {[
-                { v: "left", I: AlignLeft },
-                { v: "center", I: AlignCenter },
-                { v: "right", I: AlignRight },
-              ].map(({ v, I }) => (
+              {(
+                [
+                  { v: "left", I: AlignLeft },
+                  { v: "center", I: AlignCenter },
+                  { v: "right", I: AlignRight },
+                ] as const
+              ).map(({ v, I }) => (
                 <button
                   key={v}
-                  onClick={() => s.set({ align: v as any })}
+                  onClick={() => s.set({ align: v })}
                   className={`flex flex-1 items-center justify-center rounded-md transition ${s.align === v ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   <I className="h-4 w-4" />

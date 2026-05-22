@@ -119,8 +119,6 @@ export function Toolbar() {
         >
           {s.theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
         </Button>
-
-        <UploadZone compact />
       </div>
     </div>
   );

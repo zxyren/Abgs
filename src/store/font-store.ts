@@ -54,7 +54,7 @@ export const useFontStore = create<State>((set, get) => ({
   letterSpacing: 0,
   weight: 400,
   align: "left",
-  theme: (typeof window !== "undefined" && localStorage.getItem("akara:theme") as any) || "light",
+  theme: typeof window !== "undefined" && localStorage.getItem("akara:theme") === "dark" ? "dark" : "light",
   view: "grid",
   search: "",
   sort: "recent",
@@ -62,7 +62,7 @@ export const useFontStore = create<State>((set, get) => ({
   selected: [],
   paletteOpen: false,
 
-  set: (patch) => set(patch as any),
+  set: (patch) => set(patch),
 
   hydrate: async () => {
     if (get().hydrated) return;

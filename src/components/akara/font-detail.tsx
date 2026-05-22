@@ -87,14 +87,16 @@ export function FontDetail({ id, onClose }: { id: string | null; onClose: () => 
             </div>
 
             <div className="flex gap-1 border-b border-border px-6">
-              {[
-                { k: "specimen", l: "Specimen" },
-                { k: "glyphs", l: "Glyphs" },
-                { k: "info", l: "Info" },
-              ].map((t) => (
+              {(
+                [
+                  { k: "specimen", l: "Specimen" },
+                  { k: "glyphs", l: "Glyphs" },
+                  { k: "info", l: "Info" },
+                ] as const
+              ).map((t) => (
                 <button
                   key={t.k}
-                  onClick={() => setTab(t.k as any)}
+                  onClick={() => setTab(t.k)}
                   className={`relative px-4 cursor-pointer py-3 text-sm transition ${tab === t.k ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   {t.l}

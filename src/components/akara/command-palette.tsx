@@ -1,5 +1,5 @@
 import { Command } from "cmdk";
-import { useEffect } from "react";
+import { type ComponentType, type ReactNode, type SVGProps, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useFontStore } from "@/store/font-store";
 import { Sun, Moon, Upload, Trash2, LayoutGrid, List, Rows3, Maximize } from "lucide-react";
@@ -37,7 +37,7 @@ export function CommandPalette() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-start justify-center bg-foreground/20 p-4 pt-[15vh] backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-start justify-center bg-foreground/10 p-4 pt-[15vh] backdrop-blur-sm"
           onClick={close}
         >
           <motion.div
@@ -128,7 +128,6 @@ export function CommandPalette() {
                   >
                     Compact view
                   </Item>
-
                 </Command.Group>
                 <Command.Group
                   heading="Fonts"
@@ -168,8 +167,8 @@ function Item({
   children,
   onSelect,
 }: {
-  icon: any;
-  children: React.ReactNode;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  children: ReactNode;
   onSelect: () => void;
 }) {
   return (
