@@ -54,7 +54,10 @@ export const useFontStore = create<State>((set, get) => ({
   letterSpacing: 0,
   weight: 400,
   align: "left",
-  theme: typeof window !== "undefined" && localStorage.getItem("akara:theme") === "dark" ? "dark" : "light",
+  theme:
+    typeof window !== "undefined" && localStorage.getItem("akara:theme") === "dark"
+      ? "dark"
+      : "light",
   view: "grid",
   search: "",
   sort: "recent",

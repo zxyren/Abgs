@@ -71,7 +71,7 @@ export function UploadZone() {
     >
       <div
         {...getRootProps()}
-        className={`relative overflow-hidden rounded-2xl border transition-all duration-300 ${
+        className={`relative overflow-hidden rounded-2xl border max-w-7xl mb-7 transition-all duration-300 ${
           isDragActive
             ? "border-foreground/30 bg-foreground/5 shadow-[inset_0_0_0_1px_hsl(var(--foreground)/0.1)]"
             : "border-border bg-card"
