@@ -1,5 +1,11 @@
 import { motion } from "framer-motion";
-import { Copy, Download, Trash2, Maximize2, GitCompareArrows } from "lucide-react";
+import {
+  Copy,
+  Download,
+  Trash2,
+  Maximize2,
+  GitCompareArrows,
+} from "lucide-react";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
@@ -11,14 +17,16 @@ interface Props {
 }
 
 export function FontCard({ font, onOpen, view }: Props) {
-  const { previewText, fontSize, lineHeight, letterSpacing, weight, align } = useFontStore();
+  const { previewText, fontSize, lineHeight, letterSpacing, weight, align } =
+    useFontStore();
   const remove = useFontStore((s) => s.remove);
   const download = useFontStore((s) => s.downloadFont);
   const toggleSelected = useFontStore((s) => s.toggleSelected);
   const selected = useFontStore((s) => s.selected.includes(font.id));
 
   const sample = previewText || font.originalName;
-  const baseSize = view === "compact" ? 24 : view === "list" ? 36 : fontSize;
+  const baseSize = view === "compact" ? 22 : view === "list" ? 32 : fontSize;
+  const previewHeight = view === "compact" ? 90 : view === "list" ? 100 : 160;
 
   function copyName() {
     navigator.clipboard.writeText(font.originalName);
@@ -35,45 +43,58 @@ export function FontCard({ font, onOpen, view }: Props) {
         selected ? "ring-2 ring-foreground" : ""
       }`}
     >
-      <button onClick={() => onOpen(font.id)} className="block w-full text-left">
+      {/* Preview area — fixed height, text clipped */}
+      <button
+        onClick={() => onOpen(font.id)}
+        className="block w-full text-left"
+      >
         <div
-          className="overflow-hidden px-6 py-8"
-          style={{
-            fontFamily: `"${font.family}", system-ui`,
-            fontSize: baseSize,
-            lineHeight,
-            letterSpacing: `${letterSpacing}px`,
-            fontWeight: weight,
-            textAlign: align,
-            minHeight: view === "compact" ? 80 : 140,
-          }}
+          className="relative overflow-hidden px-5 py-5"
+          style={{ height: previewHeight }}
         >
-          <span className="block truncate-multiline">{sample}</span>
+          {/* Fade-out mask at the bottom */}
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-card to-transparent" />
+          <span
+            className="block leading-tight"
+            style={{
+              fontFamily: `"${font.family}", system-ui`,
+              fontSize: baseSize,
+              lineHeight,
+              letterSpacing: `${letterSpacing}px`,
+              fontWeight: weight,
+              textAlign: align,
+            }}
+          >
+            {sample}
+          </span>
         </div>
       </button>
 
-      <div className="flex items-center justify-between border-t border-border px-4 py-3">
-        <div className="min-w-0">
-          <div className="truncate text-sm font-medium">{font.originalName}</div>
-          <div className="text-xs text-muted-foreground">
+      {/* Footer */}
+      <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
+        <div className="min-w-0 mr-2">
+          <div className="truncate text-[13px] font-medium leading-tight">
+            {font.originalName}
+          </div>
+          <div className="text-[11px] text-muted-foreground">
             {font.format.toUpperCase()} · {humanSize(font.size)}
           </div>
         </div>
-        <div className="flex items-center gap-0.5 opacity-60 transition-opacity group-hover:opacity-100">
+        <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
           <IconBtn label="Compare" onClick={() => toggleSelected(font.id)}>
-            <GitCompareArrows className="h-4 w-4" />
+            <GitCompareArrows className="h-3.5 w-3.5" />
           </IconBtn>
           <IconBtn label="Copy name" onClick={copyName}>
-            <Copy className="h-4 w-4" />
+            <Copy className="h-3.5 w-3.5" />
           </IconBtn>
           <IconBtn label="Download" onClick={() => download(font.id)}>
-            <Download className="h-4 w-4" />
+            <Download className="h-3.5 w-3.5" />
           </IconBtn>
           <IconBtn label="Expand" onClick={() => onOpen(font.id)}>
-            <Maximize2 className="h-4 w-4" />
+            <Maximize2 className="h-3.5 w-3.5" />
           </IconBtn>
           <IconBtn label="Delete" onClick={() => remove(font.id)}>
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-3.5 w-3.5" />
           </IconBtn>
         </div>
       </div>
@@ -97,7 +118,7 @@ function IconBtn({
         onClick();
       }}
       title={label}
-      className="rounded-lg p-2 text-muted-foreground transition hover:bg-accent hover:text-foreground"
+      className="rounded-md p-1.5 text-muted-foreground transition hover:bg-accent hover:text-foreground"
     >
       {children}
     </button>

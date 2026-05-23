@@ -55,7 +55,7 @@ export function PreviewControls() {
           />
           <div>
             <div className="mb-1 flex items-center justify-between">
-              <label className="text-xs font-medium text-muted-foreground">
+              <label className="text-sm font-medium text-muted-foreground">
                 Align
               </label>
             </div>

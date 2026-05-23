@@ -73,10 +73,10 @@ export function Range({
   return (
     <div>
       <div className="mb-1 flex items-center justify-between">
-        <label className="text-xs font-medium text-muted-foreground">
+        <label className="text-sm font-medium text-muted-foreground">
           {label}
         </label>
-        <span className="tabular-nums text-xs font-semibold text-foreground">
+        <span className="tabular-nums text-sm font-semibold text-foreground">
           {display}
           {suffix}
         </span>
