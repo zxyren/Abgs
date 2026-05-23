@@ -7,14 +7,20 @@ import { isFontFile } from "@/lib/font-utils";
 import { useRef } from "react";
 
 type WebkitDirAttr = { webkitdirectory: string };
-type ItemWithEntry = DataTransferItem & { webkitGetAsEntry?: () => FileSystemEntry | null };
+type ItemWithEntry = DataTransferItem & {
+  webkitGetAsEntry?: () => FileSystemEntry | null;
+};
 
 async function walkEntries(entry: FileSystemEntry): Promise<File[]> {
   if (entry.isFile)
-    return new Promise((res) => (entry as FileSystemFileEntry).file((f) => res([f])));
+    return new Promise((res) =>
+      (entry as FileSystemFileEntry).file((f) => res([f])),
+    );
   if (entry.isDirectory) {
     const reader = (entry as FileSystemDirectoryEntry).createReader();
-    const entries = await new Promise<FileSystemEntry[]>((res) => reader.readEntries(res));
+    const entries = await new Promise<FileSystemEntry[]>((res) =>
+      reader.readEntries(res),
+    );
     return (await Promise.all(entries.map(walkEntries))).flat();
   }
   return [];
@@ -27,7 +33,8 @@ export function UploadZone() {
   const folderInputRef = useRef<HTMLInputElement>(null);
 
   const onDrop = async (accepted: File[], _rej: unknown, event: DropEvent) => {
-    const items = "dataTransfer" in event ? event.dataTransfer?.items : undefined;
+    const items =
+      "dataTransfer" in event ? event.dataTransfer?.items : undefined;
     let all = accepted;
 
     if (items?.length) {
@@ -85,14 +92,17 @@ export function UploadZone() {
           type="file"
           className="hidden"
           onChange={handleFolderChange}
-          {...({ webkitdirectory: "", multiple: true } as WebkitDirAttr & { multiple: boolean })}
+          {...({ webkitdirectory: "", multiple: true } as WebkitDirAttr & {
+            multiple: boolean;
+          })}
         />
 
         {/* Subtle dot-grid texture */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.035]"
           style={{
-            backgroundImage: "radial-gradient(circle, var(--foreground) 1px, transparent 1px)",
+            backgroundImage:
+              "radial-gradient(circle, var(--foreground) 1px, transparent 1px)",
             backgroundSize: "24px 24px",
           }}
         />
@@ -177,7 +187,7 @@ export function UploadZone() {
             {FORMATS.map((fmt) => (
               <span
                 key={fmt}
-                className="rounded-md border border-border/60 bg-muted/30 px-2 py-0.5 font-mono text-[10px] tracking-wide text-muted-foreground"
+                className="rounded-md border font-medium border-border/60 bg-muted/30 px-2 py-0.5 text-sm tracking-wide text-muted-foreground"
               >
                 {fmt}
               </span>
@@ -185,8 +195,8 @@ export function UploadZone() {
           </div>
 
           {/* Privacy badge */}
-          <div className="mt-5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <ShieldCheck size={12} className="text-emerald-500" />
+          <div className="mt-5 flex items-center gap-1.5 text-sm text-muted-foreground">
+            <ShieldCheck size={16} className="text-emerald-500" />
             Stored locally · Nothing leaves your device
           </div>
         </div>

@@ -6,7 +6,7 @@ export function PreviewControls() {
   return (
     <div className="mx-auto mb-6 max-w-7xl px-4">
       <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
-        <input
+        <textarea
           value={s.previewText}
           onChange={(e) => s.set({ previewText: e.target.value })}
           placeholder="Type something to preview…"
@@ -49,7 +49,9 @@ export function PreviewControls() {
           />
           <div>
             <div className="mb-1.5 flex items-center justify-between">
-              <label className="text-xs font-medium text-muted-foreground">Align</label>
+              <label className="text-xs font-medium text-muted-foreground">
+                Align
+              </label>
             </div>
             <div className="flex h-9 rounded-lg border border-border bg-background p-1">
               {(
@@ -95,7 +97,9 @@ function Range({
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <label className="text-xs font-medium text-muted-foreground">{label}</label>
+        <label className="text-xs font-medium text-muted-foreground">
+          {label}
+        </label>
         <span className="text-xs tabular-nums text-foreground">
           {value}
           {suffix}
