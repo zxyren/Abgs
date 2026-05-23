@@ -63,7 +63,7 @@ export function Index() {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <Toaster richColors position="bottom-right" />
+      <Toaster richColors position="top-center" />
       <CommandPalette />
       <FontDetail id={openId} onClose={() => setOpenId(null)} />
       <CompareBar onOpen={() => setCompareOpen(true)} />

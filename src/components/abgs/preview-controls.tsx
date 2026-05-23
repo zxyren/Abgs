@@ -1,7 +1,14 @@
 import { useCallback } from "react";
 import { useFontStore } from "@/store/font-store";
-import { AlignLeft, AlignCenter, AlignRight, RotateCcw } from "lucide-react";
+import {
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  RotateCcw,
+  Languages,
+} from "lucide-react";
 import { Range } from "@/components/ui/slider";
+import { Button } from "../ui/button";
 
 export function PreviewControls() {
   const previewText = useFontStore((s) => s.previewText);
@@ -12,6 +19,17 @@ export function PreviewControls() {
   const align = useFontStore((s) => s.align);
   const set = useFontStore((s) => s.set);
   const resetPreview = useFontStore((s) => s.resetPreview);
+
+  const previewTextOptions = [
+    "The quick brown fox jumps over the lazy dog",
+    "សត្វកញ្ជ្រោងពណ៌ត្នោតរហ័សរហួន លោតរំលងពីលើសត្វឆ្កែដ៏ខ្ជិល",
+  ];
+
+  const shufflePreview = useCallback(() => {
+    const currentIndex = previewTextOptions.indexOf(previewText);
+    const nextIndex = currentIndex === 0 ? 1 : 0;
+    set({ previewText: previewTextOptions[nextIndex] });
+  }, [previewText, previewTextOptions, set]);
 
   const setAlign = useCallback(
     (v: "left" | "center" | "right") => set({ align: v }),
@@ -33,14 +51,24 @@ export function PreviewControls() {
             <span className="absolute bottom-0 left-0 h-px w-full rounded-full bg-border" />
             <span className="absolute bottom-0 left-0 h-px w-0 bg-primary transition-all duration-300 ease-out peer-focus:w-full" />
           </div>
-          <button
+          <Button
+            size="icon"
+            variant="default"
+            onClick={shufflePreview}
+            className="mb-2"
+            title="Shuffle preview text"
+          >
+            <Languages size={16} />
+          </Button>
+          <Button
+            variant="destructive"
             onClick={resetPreview}
-            className="mb-1 inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-muted-foreground transition hover:bg-accent hover:text-accent-foreground"
+            className="mb-2"
             title="Reset to defaults"
           >
-            <RotateCcw className="h-3.5 w-3.5" />
+            <RotateCcw size={16} />
             Reset
-          </button>
+          </Button>
         </div>
 
         <div className="grid grid-cols-2 gap-7 md:grid-cols-5">
