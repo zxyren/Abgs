@@ -3,13 +3,13 @@ import Fuse from "fuse.js";
 import { AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { useFontStore } from "@/store/font-store";
-import { Toolbar } from "@/components/akara/toolbar";
-import { PreviewControls } from "@/components/akara/preview-controls";
-import { UploadZone } from "@/components/akara/upload-zone";
-import { FontCard } from "@/components/akara/font-card";
-import { FontDetail } from "@/components/akara/font-detail";
-import { CommandPalette } from "@/components/akara/command-palette";
-import { CompareBar, CompareModal } from "@/components/akara/compare-bar";
+import { Toolbar } from "@/components/abgs/toolbar";
+import { PreviewControls } from "@/components/abgs/preview-controls";
+import { UploadZone } from "@/components/abgs/upload-zone";
+import { FontCard } from "@/components/abgs/font-card";
+import { FontDetail } from "@/components/abgs/font-detail";
+import { CommandPalette } from "@/components/abgs/command-palette";
+import { CompareBar, CompareModal } from "@/components/abgs/compare-bar";
 
 export function Index() {
   const s = useFontStore();
@@ -82,7 +82,7 @@ export function Index() {
             Your fonts, beautifully organized.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-balance text-muted-foreground">
-            Drop a folder. Preview thousands. Compare side-by-side. Akara runs
+            Drop a folder. Preview thousands. Compare side-by-side. Abgs runs
             entirely in your browser.
           </p>
         </div>

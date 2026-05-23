@@ -39,7 +39,7 @@ export function FontCard({ font, onOpen, view }: Props) {
       layout
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.97 }}
+      exit={{ opacity: 0, scale: 0.5 }}
       className={`group relative overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-float ${
         selected ? "ring-2 ring-foreground" : ""
       }`}

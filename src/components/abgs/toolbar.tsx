@@ -12,7 +12,12 @@ import {
 } from "lucide-react";
 import { UploadZone } from "./upload-zone";
 import { Button } from "../ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const views: { key: ViewMode; icon: LucideIcon; label: string }[] = [
   { key: "grid", icon: LayoutGrid, label: "Grid" },
@@ -32,7 +37,11 @@ export function Toolbar() {
     <div className="sticky top-4 z-30 mx-auto mb-6 max-w-7xl px-4">
       <div className="glass flex flex-wrap items-center gap-2 rounded-lg border border-border p-4 shadow-soft">
         <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="Abgs logo" className="h-11 w-11 drop-shadow-sm" />
+          <img
+            src="/logo.png"
+            alt="Abgs logo"
+            className="h-11 w-11 drop-shadow-sm"
+          />
           <span className="font-semibold tracking-tight">Abgs</span>
         </div>
         <div className="mx-1 h-6 w-px bg-border" />
@@ -112,7 +121,7 @@ export function Toolbar() {
             const next = s.theme === "dark" ? "light" : "dark";
             s.set({ theme: next });
             document.documentElement.classList.toggle("dark", next === "dark");
-            localStorage.setItem("akara:theme", next);
+            localStorage.setItem("abgs:theme", next);
           }}
           className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
           title="Toggle theme"

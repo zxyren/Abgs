@@ -27,7 +27,7 @@ export function CommandPalette() {
   function setTheme(t: "light" | "dark") {
     s.set({ theme: t });
     document.documentElement.classList.toggle("dark", t === "dark");
-    localStorage.setItem("akara:theme", t);
+    localStorage.setItem("abgs:theme", t);
   }
 
   return (

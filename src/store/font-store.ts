@@ -1,6 +1,17 @@
 import { create } from "zustand";
-import { get as idbGet, set as idbSet, del as idbDel, keys as idbKeys } from "idb-keyval";
-import { isFontFile, sanitizeFamily, fontFormat, loadFont, unloadFont } from "@/lib/font-utils";
+import {
+  get as idbGet,
+  set as idbSet,
+  del as idbDel,
+  keys as idbKeys,
+} from "idb-keyval";
+import {
+  isFontFile,
+  sanitizeFamily,
+  fontFormat,
+  loadFont,
+  unloadFont,
+} from "@/lib/font-utils";
 
 export interface FontItem {
   id: string;
@@ -39,23 +50,25 @@ interface State {
   downloadFont: (id: string) => Promise<void>;
   toggleSelected: (id: string) => void;
   clearSelected: () => void;
+  resetPreview: () => void;
   set: (patch: Partial<State>) => void;
 }
 
-const META_KEY = "akara:fonts";
-const DATA_PREFIX = "akara:data:";
+const META_KEY = "abgs:fonts";
+const DATA_PREFIX = "abgs:data:";
 
 export const useFontStore = create<State>((set, get) => ({
   fonts: [],
   hydrated: false,
   previewText: "The quick brown fox jumps over the lazy dog",
-  fontSize: 48,
+  fontSize: 32,
   lineHeight: 1.3,
   letterSpacing: 0,
   weight: 400,
   align: "left",
   theme:
-    typeof window !== "undefined" && localStorage.getItem("akara:theme") === "dark"
+    typeof window !== "undefined" &&
+    localStorage.getItem("abgs:theme") === "dark"
       ? "dark"
       : "light",
   view: "grid",
@@ -73,7 +86,9 @@ export const useFontStore = create<State>((set, get) => ({
     // Load all font data into FontFace
     await Promise.all(
       meta.map(async (f) => {
-        const data = (await idbGet(DATA_PREFIX + f.id)) as ArrayBuffer | undefined;
+        const data = (await idbGet(DATA_PREFIX + f.id)) as
+          | ArrayBuffer
+          | undefined;
         if (data) await loadFont(f.family, data);
       }),
     );
@@ -137,12 +152,27 @@ export const useFontStore = create<State>((set, get) => ({
 
   toggleSelected: (id) => {
     const s = get().selected;
-    set({ selected: s.includes(id) ? s.filter((x) => x !== id) : [...s, id].slice(-4) });
+    set({
+      selected: s.includes(id)
+        ? s.filter((x) => x !== id)
+        : [...s, id].slice(-4),
+    });
   },
   clearSelected: () => set({ selected: [] }),
+  resetPreview: () =>
+    set({
+      previewText: "The quick brown fox jumps over the lazy dog",
+      fontSize: 32,
+      lineHeight: 1.3,
+      letterSpacing: 0,
+      weight: 400,
+      align: "left",
+    }),
 }));
 
 export async function clearAllStorage() {
   const all = await idbKeys();
-  await Promise.all(all.filter((k) => String(k).startsWith("akara:")).map((k) => idbDel(k)));
+  await Promise.all(
+    all.filter((k) => String(k).startsWith("abgs:")).map((k) => idbDel(k)),
+  );
 }
