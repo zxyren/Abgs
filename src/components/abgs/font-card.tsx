@@ -1,11 +1,5 @@
 import { motion } from "framer-motion";
-import {
-  Copy,
-  Download,
-  Trash2,
-  Maximize2,
-  GitCompareArrows,
-} from "lucide-react";
+import { Copy, Download, Trash2, GitCompareArrows } from "lucide-react";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
