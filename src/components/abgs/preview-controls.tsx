@@ -1,4 +1,5 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { motion } from "framer-motion";
 import { useFontStore } from "@/store/font-store";
 import {
   AlignLeft,
@@ -29,7 +30,10 @@ export function PreviewControls() {
     const currentIndex = previewTextOptions.indexOf(previewText);
     const nextIndex = currentIndex === 0 ? 1 : 0;
     set({ previewText: previewTextOptions[nextIndex] });
+    setShowPreview(true);
   }, [previewText, previewTextOptions, set]);
+
+  const [showPreview, setShowPreview] = useState(false);
 
   const setAlign = useCallback(
     (v: "left" | "center" | "right") => set({ align: v }),
@@ -42,8 +46,11 @@ export function PreviewControls() {
         <div className="relative mb-6 flex items-center gap-2">
           <div className="flex-1">
             <textarea
-              value={previewText}
-              onChange={(e) => set({ previewText: e.target.value })}
+              value={showPreview ? previewText : ""}
+              onChange={(e) => {
+                set({ previewText: e.target.value });
+                setShowPreview(true);
+              }}
               placeholder="Type something to preview…"
               className="peer w-full resize-none bg-transparent px-0 pb-3 pt-1 text-lg leading-relaxed text-foreground placeholder:text-muted-foreground outline-none"
               rows={2}
@@ -62,7 +69,10 @@ export function PreviewControls() {
           </Button>
           <Button
             variant="destructive"
-            onClick={resetPreview}
+            onClick={() => {
+              resetPreview();
+              setShowPreview(false);
+            }}
             className="mb-2"
             title="Reset to defaults"
           >
@@ -111,24 +121,33 @@ export function PreviewControls() {
             <label className="mb-1 block text-sm font-medium text-muted-foreground">
               Align
             </label>
-            <div className="flex h-9 rounded-lg border border-border bg-background p-1">
+            <div className="relative flex h-10 rounded-sm border border-border bg-background p-1">
               {(
                 [
-                  { v: "left", I: AlignLeft },
-                  { v: "center", I: AlignCenter },
-                  { v: "right", I: AlignRight },
+                  { v: "left", icon: AlignLeft },
+                  { v: "center", icon: AlignCenter },
+                  { v: "right", icon: AlignRight },
                 ] as const
-              ).map(({ v, I }) => (
+              ).map(({ v, icon: Icon }) => (
                 <button
                   key={v}
                   onClick={() => setAlign(v)}
-                  className={`flex flex-1 items-center justify-center rounded-md transition ${
-                    align === v
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+                  className="relative flex flex-1 cursor-pointer items-center justify-center transition"
                 >
-                  <I className="h-4 w-4" />
+                  {align === v && (
+                    <motion.div
+                      layoutId="align"
+                      className="absolute inset-0 rounded-sm bg-foreground/20"
+                    />
+                  )}
+                  <Icon
+                    size={20}
+                    className={`relative transition ${
+                      align === v
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  />
                 </button>
               ))}
             </div>
