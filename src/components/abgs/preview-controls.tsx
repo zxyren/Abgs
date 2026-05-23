@@ -10,6 +10,12 @@ import {
 } from "lucide-react";
 import { Range } from "@/components/ui/slider";
 import { Button } from "../ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "../ui/tooltip";
 
 export function PreviewControls() {
   const previewText = useFontStore((s) => s.previewText);
@@ -58,27 +64,38 @@ export function PreviewControls() {
             <span className="absolute bottom-0 left-0 h-px w-full rounded-full bg-border" />
             <span className="absolute bottom-0 left-0 h-px w-0 bg-primary transition-all duration-300 ease-out peer-focus:w-full" />
           </div>
-          <Button
-            size="icon"
-            variant="default"
-            onClick={shufflePreview}
-            className="mb-2"
-            title="Shuffle preview text"
-          >
-            <Languages size={16} />
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => {
-              resetPreview();
-              setShowPreview(false);
-            }}
-            className="mb-2"
-            title="Reset to defaults"
-          >
-            <RotateCcw size={16} />
-            Reset
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="default"
+                  onClick={shufflePreview}
+                  className="mb-2"
+                >
+                  <Languages size={16} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top">Shuffle preview text</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    resetPreview();
+                    setShowPreview(false);
+                  }}
+                  className="mb-2"
+                >
+                  <RotateCcw size={16} />
+                  Reset
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top">Reset to defaults</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
         <div className="grid grid-cols-2 gap-7 md:grid-cols-5">

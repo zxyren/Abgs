@@ -77,16 +77,16 @@ export function FontCard({ font, onOpen, view }: Props) {
         </div>
         <div className="flex shrink-0 items-center gap-0.5">
           <IconBtn label="Compare" onClick={() => toggleSelected(font.id)}>
-            <GitCompareArrows className="h-3.5 w-3.5" />
+            <GitCompareArrows size={16} />
           </IconBtn>
           <IconBtn label="Copy name" onClick={copyName}>
-            <Copy className="h-3.5 w-3.5" />
+            <Copy size={16} />
           </IconBtn>
           <IconBtn label="Download" onClick={() => download(font.id)}>
-            <Download className="h-3.5 w-3.5" />
+            <Download size={16} />
           </IconBtn>
           <IconBtn label="Delete" onClick={() => remove(font.id)}>
-            <Trash2 className="h-3.5 w-3.5" />
+            <Trash2 size={16} />
           </IconBtn>
         </div>
       </div>

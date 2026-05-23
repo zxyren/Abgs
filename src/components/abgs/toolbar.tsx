@@ -90,15 +90,7 @@ export function Toolbar() {
           <SelectContent>
             <SelectGroup>
               <SelectItem value="all">All formats</SelectItem>
-              {[
-                "ttf",
-                "otf",
-                "woff",
-                "woff2",
-                "eot",
-                "ttc",
-                "fon",
-              ].map((f) => (
+              {["ttf", "otf", "woff", "woff2", "eot", "ttc", "fon"].map((f) => (
                 <SelectItem key={f} value={f}>
                   {f.toUpperCase()}
                 </SelectItem>
@@ -128,32 +120,42 @@ export function Toolbar() {
               </Tooltip>
             ))}
           </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => s.set({ paletteOpen: true })}
+                className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
+              >
+                <Command size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">Command palette</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => {
+                  const next = s.theme === "dark" ? "light" : "dark";
+                  s.set({ theme: next });
+                  document.documentElement.classList.toggle(
+                    "dark",
+                    next === "dark",
+                  );
+                  localStorage.setItem("abgs:theme", next);
+                }}
+                className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
+                title="Toggle theme"
+              >
+                {s.theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">Toggle theme</TooltipContent>
+          </Tooltip>
         </TooltipProvider>
-
-        <Button
-          size="icon"
-          variant="outline"
-          onClick={() => s.set({ paletteOpen: true })}
-          title="Command palette"
-          className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
-        >
-          <Command size={16} />
-        </Button>
-
-        <Button
-          size="icon"
-          variant="outline"
-          onClick={() => {
-            const next = s.theme === "dark" ? "light" : "dark";
-            s.set({ theme: next });
-            document.documentElement.classList.toggle("dark", next === "dark");
-            localStorage.setItem("abgs:theme", next);
-          }}
-          className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
-          title="Toggle theme"
-        >
-          {s.theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-        </Button>
       </div>
     </div>
   );
