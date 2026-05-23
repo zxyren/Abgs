@@ -1,18 +1,24 @@
 import { useFontStore } from "@/store/font-store";
 import { AlignLeft, AlignCenter, AlignRight } from "lucide-react";
+import { Range } from "@/components/ui/slider";
 
 export function PreviewControls() {
   const s = useFontStore();
   return (
     <div className="mx-auto mb-6 max-w-7xl px-4">
-      <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
-        <textarea
-          value={s.previewText}
-          onChange={(e) => s.set({ previewText: e.target.value })}
-          placeholder="Type something to preview…"
-          className="mb-4 w-full rounded-xl border border-border bg-background px-4 py-3 text-base outline-none focus:border-foreground/40"
-        />
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+      <div className="rounded-2xl bg-card p-4 shadow-soft">
+        <div className="relative mb-6">
+          <textarea
+            value={s.previewText}
+            onChange={(e) => s.set({ previewText: e.target.value })}
+            placeholder="Type something to preview…"
+            className="peer w-full resize-none bg-transparent px-0 pb-3 pt-1 text-lg leading-relaxed text-foreground placeholder:text-muted-foreground outline-none"
+            rows={2}
+          />
+          <span className="absolute bottom-0 left-0 h-px rounded-full w-full bg-border" />
+          <span className="absolute bottom-0 left-0 h-px w-0 bg-primary transition-all duration-300 ease-out peer-focus:w-full" />
+        </div>
+        <div className="grid grid-cols-2 gap-7 md:grid-cols-5">
           <Range
             label="Size"
             value={s.fontSize}
@@ -48,7 +54,7 @@ export function PreviewControls() {
             onChange={(v) => s.set({ letterSpacing: v })}
           />
           <div>
-            <div className="mb-1.5 flex items-center justify-between">
+            <div className="mb-1 flex items-center justify-between">
               <label className="text-xs font-medium text-muted-foreground">
                 Align
               </label>
@@ -64,7 +70,11 @@ export function PreviewControls() {
                 <button
                   key={v}
                   onClick={() => s.set({ align: v })}
-                  className={`flex flex-1 items-center justify-center rounded-md transition ${s.align === v ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`flex flex-1 items-center justify-center rounded-md transition ${
+                    s.align === v
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
                   <I className="h-4 w-4" />
                 </button>
@@ -73,47 +83,6 @@ export function PreviewControls() {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function Range({
-  label,
-  value,
-  min,
-  max,
-  step,
-  onChange,
-  suffix = "",
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step: number;
-  onChange: (v: number) => void;
-  suffix?: string;
-}) {
-  return (
-    <div>
-      <div className="mb-1.5 flex items-center justify-between">
-        <label className="text-xs font-medium text-muted-foreground">
-          {label}
-        </label>
-        <span className="text-xs tabular-nums text-foreground">
-          {value}
-          {suffix}
-        </span>
-      </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="h-9 w-full accent-foreground"
-      />
     </div>
   );
 }
