@@ -39,7 +39,7 @@ export function PreviewControls() {
   return (
     <div className="mx-auto mb-6 max-w-7xl px-4">
       <div className="rounded-2xl bg-card p-4 shadow-soft">
-        <div className="relative mb-6 flex items-end gap-2">
+        <div className="relative mb-6 flex items-center gap-2">
           <div className="flex-1">
             <textarea
               value={previewText}

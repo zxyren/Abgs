@@ -1,10 +1,12 @@
 import { type DropEvent, useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, FolderOpen, FileType, ShieldCheck } from "lucide-react";
+import { Upload, Folder, FileType, ShieldCheck } from "lucide-react";
 import { useFontStore } from "@/store/font-store";
 import { toast } from "sonner";
 import { isFontFile } from "@/lib/font-utils";
 import { useRef, useState } from "react";
+import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
 
 type WebkitDirAttr = { webkitdirectory: string };
 type ItemWithEntry = DataTransferItem & {
@@ -131,16 +133,16 @@ export function UploadZone() {
           </motion.div>
 
           {/* Heading */}
-          <p className="text-[15px] font-medium text-foreground">
+          <p className="text-base text-foreground">
             {isDragActive ? (
               "Drop to load fonts"
             ) : (
               <>
-                Drag &amp; Drop or{" "}
+                Drag & Drop or{" "}
                 <button
                   type="button"
                   onClick={open}
-                  className="underline underline-offset-2 decoration-foreground/30 hover:decoration-foreground transition-all"
+                  className="relative cursor-pointer font-bold text-foreground after:absolute after:left-0 after:bottom-0 after:h-px after:w-0 after:bg-foreground after:transition-all after:duration-300 after:ease-out hover:after:w-full"
                 >
                   choose files
                 </button>{" "}
@@ -154,31 +156,26 @@ export function UploadZone() {
 
           {/* Divider */}
           <div className="mb-6 flex w-60 items-center gap-3">
-            <span className="h-px flex-1 bg-border" />
-            <span className="text-[11px] uppercase tracking-widest text-muted-foreground/50">
+            <Separator orientation="horizontal" className="flex-1" />
+            <span className="text-sm uppercase tracking-widest text-muted-foreground font-bold">
               or browse
             </span>
-            <span className="h-px flex-1 bg-border" />
+            <Separator orientation="horizontal" className="flex-1" />
           </div>
 
           {/* Buttons */}
           <div className="flex gap-2.5">
-            <button
-              type="button"
-              onClick={open}
-              disabled={loading}
-              className="flex items-center gap-2 rounded-lg border border-foreground bg-foreground px-4 py-2 text-[13px] font-medium text-background transition-all hover:opacity-85 active:scale-[0.97] disabled:opacity-40"
-            >
-              <FileType size={14} /> Font files
-            </button>
-            <button
+            <Button type="button" onClick={open} disabled={loading}>
+              <FileType size={16} /> Font files
+            </Button>
+            <Button
+              variant="outline"
               type="button"
               onClick={() => folderInputRef.current?.click()}
               disabled={loading}
-              className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-[13px] text-foreground/65 transition-all hover:bg-accent hover:text-foreground active:scale-[0.97] disabled:opacity-40"
             >
-              <FolderOpen size={14} /> Open folder
-            </button>
+              <Folder size={16} /> Open folder
+            </Button>
           </div>
         </div>
       </div>
