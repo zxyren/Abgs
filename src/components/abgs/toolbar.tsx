@@ -5,12 +5,10 @@ import {
   LayoutGrid,
   List,
   Rows3,
-  Maximize,
   Sun,
   Moon,
   Command,
 } from "lucide-react";
-import { UploadZone } from "./upload-zone";
 import { Button } from "../ui/button";
 import {
   Tooltip,
@@ -18,6 +16,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const views: { key: ViewMode; icon: LucideIcon; label: string }[] = [
   { key: "grid", icon: LayoutGrid, label: "Grid" },
@@ -56,30 +62,50 @@ export function Toolbar() {
           />
         </div>
 
-        <select
+        <Select
           value={s.sort}
-          onChange={(e) => s.set({ sort: e.target.value as SortKey })}
-          className="h-10 rounded-sm border border-border bg-background px-3 text-sm"
+          onValueChange={(v) => s.set({ sort: v as SortKey })}
         >
-          {sorts.map((x) => (
-            <option key={x.key} value={x.key}>
-              Sort: {x.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger>
+            <SelectValue placeholder="Sort" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {sorts.map((x) => (
+                <SelectItem key={x.key} value={x.key}>
+                  {`Sort: ${x.label}`}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
-        <select
-          value={s.filterFormat ?? ""}
-          onChange={(e) => s.set({ filterFormat: e.target.value || null })}
-          className="h-10 rounded-sm border border-border bg-background px-3 text-sm"
+        <Select
+          onValueChange={(v) => s.set({ filterFormat: v === "all" ? null : v })}
+          defaultValue="all"
         >
-          <option value="">All formats</option>
-          {["ttf", "otf", "woff", "woff2", "eot", "ttc", "fon"].map((f) => (
-            <option key={f} value={f}>
-              {f.toUpperCase()}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger>
+            <SelectValue placeholder="Format" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectItem value="all">All formats</SelectItem>
+              {[
+                "ttf",
+                "otf",
+                "woff",
+                "woff2",
+                "eot",
+                "ttc",
+                "fon",
+              ].map((f) => (
+                <SelectItem key={f} value={f}>
+                  {f.toUpperCase()}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
         <TooltipProvider>
           <div className="flex h-10 items-center rounded-sm border border-border bg-background p-1">
