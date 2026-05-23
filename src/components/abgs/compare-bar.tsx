@@ -2,7 +2,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
 
 export function CompareBar({ onOpen }: { onOpen: () => void }) {
   const selected = useFontStore((s) => s.selected);

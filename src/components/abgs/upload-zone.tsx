@@ -1,38 +1,17 @@
-import { type DropEvent, useDropzone } from "react-dropzone";
+import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Folder, FileType, ShieldCheck } from "lucide-react";
+import { Upload, FileType, ShieldCheck } from "lucide-react";
 import { useFontStore } from "@/store/font-store";
 import { toast } from "sonner";
 import { isFontFile } from "@/lib/font-utils";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-
-type WebkitDirAttr = { webkitdirectory: string };
-type ItemWithEntry = DataTransferItem & {
-  webkitGetAsEntry?: () => FileSystemEntry | null;
-};
-
-async function walkEntries(entry: FileSystemEntry): Promise<File[]> {
-  if (entry.isFile)
-    return new Promise((res) =>
-      (entry as FileSystemFileEntry).file((f) => res([f])),
-    );
-  if (entry.isDirectory) {
-    const reader = (entry as FileSystemDirectoryEntry).createReader();
-    const entries = await new Promise<FileSystemEntry[]>((res) =>
-      reader.readEntries(res),
-    );
-    return (await Promise.all(entries.map(walkEntries))).flat();
-  }
-  return [];
-}
 
 const FORMATS = ["TTF", "OTF", "WOFF", "WOFF2", "EOT", "TTC", "FON"];
 
 export function UploadZone() {
   const addFiles = useFontStore((s) => s.addFiles);
-  const folderInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
   const process = async (files: File[]) => {
@@ -44,26 +23,8 @@ export function UploadZone() {
     toast.success(`Loaded ${fonts.length} font${fonts.length > 1 ? "s" : ""}`);
   };
 
-  const onDrop = async (accepted: File[], _: unknown, event: DropEvent) => {
-    const items =
-      "dataTransfer" in event ? event.dataTransfer?.items : undefined;
-    if (items?.length) {
-      const all = (
-        await Promise.all(
-          Array.from(items as DataTransferItemList)
-            .map((i) => (i as ItemWithEntry).webkitGetAsEntry?.())
-            .filter(Boolean)
-            .map((e) => walkEntries(e!)),
-        )
-      ).flat();
-      return process(all.length ? all : accepted);
-    }
+  const onDrop = async (accepted: File[]) => {
     process(accepted);
-  };
-
-  const handleFolderChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    await process(Array.from(e.target.files ?? []));
-    e.target.value = "";
   };
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
@@ -79,122 +40,138 @@ export function UploadZone() {
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className="mx-auto mb-7 max-w-7xl"
     >
-      <input
-        ref={folderInputRef}
-        type="file"
-        className="hidden"
-        onChange={handleFolderChange}
-        {...({ webkitdirectory: "", multiple: true } as WebkitDirAttr & {
-          multiple: boolean;
-        })}
-      />
-
-      {/* Dashed drop zone */}
+      {/* Enhanced drop zone */}
       <div
         {...getRootProps()}
         className={`
-          relative overflow-hidden rounded-2xl border border-dashed outline-none
-          transition-all duration-200
+          group relative overflow-hidden rounded-2xl border-2 border-dashed 
+          transition-all duration-300 ease-out
           ${
             isDragActive
-              ? "border-foreground/40 bg-foreground/10"
-              : "border-border hover:border-foreground/25 hover:bg-foreground/5"
+              ? "border-indigo-500/50 bg-indigo-500/5 dark:border-indigo-400/50 dark:bg-indigo-400/5"
+              : "border-neutral-300 bg-white hover:border-indigo-400/40 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-indigo-500/30 dark:hover:bg-neutral-800/50"
           }
         `}
       >
         <input {...getInputProps()} />
 
+        {/* Animated background overlay on drag */}
         <AnimatePresence>
           {isDragActive && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="pointer-events-none absolute inset-0 bg-foreground/5"
+              transition={{ duration: 0.2 }}
+              className="pointer-events-none absolute inset-0 bg-linear-to-br from-indigo-500/5 via-transparent to-purple-500/5 dark:from-indigo-400/5 dark:via-transparent dark:to-purple-400/5"
             />
           )}
         </AnimatePresence>
 
-        <div className="flex flex-col items-center px-8 py-14">
-          {/* Icon */}
+        <div className="flex flex-col items-center px-8 py-16">
+          {/* Enhanced icon container */}
           <motion.div
-            animate={isDragActive ? { scale: 1.08, y: -2 } : { scale: 1, y: 0 }}
+            animate={isDragActive ? { scale: 1.1, y: -4 } : { scale: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 22 }}
             className={`
-              mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border transition-colors duration-200
+              relative mb-6 flex h-16 w-16 items-center justify-center rounded-2xl 
+              transition-all duration-300
               ${
                 isDragActive
-                  ? "border-foreground/25 bg-foreground/10 text-foreground"
-                  : "border-border bg-card text-foreground/50"
+                  ? "border-indigo-500/30 bg-indigo-500/10 text-indigo-600 shadow-lg shadow-indigo-500/20 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-400 dark:shadow-indigo-400/20"
+                  : "border-neutral-200 bg-white text-neutral-400 shadow-sm group-hover:border-indigo-200 group-hover:text-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-500 dark:group-hover:border-indigo-700 dark:group-hover:text-indigo-400"
               }
             `}
           >
-            <Upload size={22} strokeWidth={1.5} />
+            <Upload
+              size={24}
+              strokeWidth={1.5}
+              className={`transition-transform duration-300 ${isDragActive ? "scale-110" : ""}`}
+            />
           </motion.div>
 
-          {/* Heading */}
-          <p className="text-base text-foreground">
-            {isDragActive ? (
-              "Drop to load fonts"
-            ) : (
-              <>
-                Drag & Drop or{" "}
-                <button
-                  type="button"
-                  onClick={open}
-                  className="relative cursor-pointer font-bold text-foreground after:absolute after:left-0 after:bottom-0 after:h-px after:w-0 after:bg-foreground after:transition-all after:duration-300 after:ease-out hover:after:w-full"
-                >
-                  choose files
-                </button>{" "}
-                to upload
-              </>
-            )}
-          </p>
-          <p className="mt-1.5 mb-7 text-[13px] text-muted-foreground">
-            Single files, multiple fonts, or an entire folder
-          </p>
-
-          {/* Divider */}
-          <div className="mb-6 flex w-60 items-center gap-3">
-            <Separator orientation="horizontal" className="flex-1" />
-            <span className="text-sm uppercase tracking-widest text-muted-foreground font-bold">
-              or browse
-            </span>
-            <Separator orientation="horizontal" className="flex-1" />
+          {/* Enhanced heading */}
+          <div className="text-center">
+            <p className="text-base font-medium text-neutral-700 dark:text-neutral-200">
+              {isDragActive ? (
+                <span className="text-indigo-600 dark:text-indigo-400">
+                  Drop your fonts here
+                </span>
+              ) : (
+                <>
+                  Drag & drop or{" "}
+                  <button
+                    type="button"
+                    onClick={open}
+                    className="relative cursor-pointer font-semibold text-indigo-600 transition-colors hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300"
+                  >
+                    choose files
+                  </button>{" "}
+                  to upload
+                </>
+              )}
+            </p>
+            <p className="mt-2 text-[13px] text-neutral-500 dark:text-neutral-400">
+              Select multiple font files to load them all at once
+            </p>
           </div>
 
-          {/* Buttons */}
-          <div className="flex gap-2.5">
-            <Button type="button" onClick={open} disabled={loading}>
-              <FileType size={16} /> Font files
-            </Button>
+          {/* Enhanced divider with accent */}
+          <div className="my-8 flex w-72 items-center gap-3">
+            <Separator
+              orientation="horizontal"
+              className="flex-1 bg-neutral-200 dark:bg-neutral-700"
+            />
+            <span className="text-xs font-medium uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+              supported formats
+            </span>
+            <Separator
+              orientation="horizontal"
+              className="flex-1 bg-neutral-200 dark:bg-neutral-700"
+            />
+          </div>
+
+          {/* Enhanced buttons */}
+          <div className="flex gap-3">
             <Button
-              variant="outline"
               type="button"
-              onClick={() => folderInputRef.current?.click()}
+              onClick={open}
               disabled={loading}
+              className="bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-700 hover:shadow-indigo-500/30 dark:bg-indigo-500 dark:hover:bg-indigo-600"
             >
-              <Folder size={16} /> Open folder
+              <FileType size={16} className="mr-2" />
+              {loading ? "Loading..." : "Select Font Files"}
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="mt-3 flex items-center justify-between px-1">
-        <div className="flex flex-wrap gap-x-1.5 text-sm text-muted-foreground/40">
-          {FORMATS.map((f, i) => (
-            <span key={f}>
-              {f}
+      {/* Enhanced footer */}
+      <div className="mt-4 flex flex-wrap items-center justify-between px-2 gap-3">
+        {/* Format badges */}
+        <div className="flex flex-wrap gap-2">
+          {FORMATS.map((format, i) => (
+            <span
+              key={format}
+              className="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
+            >
+              {format}
               {i < FORMATS.length - 1 && (
-                <span className="ml-1.5 opacity-50">·</span>
+                <span className="ml-1 text-neutral-400 dark:text-neutral-600">
+                  •
+                </span>
               )}
             </span>
           ))}
         </div>
-        <div className="flex items-center gap-1.5 text-sm text-muted-foreground/40">
-          <ShieldCheck size={16} className="text-emerald-500/70" />
-          Stored locally · Nothing leaves your device
+
+        {/* Privacy badge */}
+        <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400">
+          <ShieldCheck
+            size={14}
+            className="text-emerald-500 dark:text-emerald-400"
+          />
+          <span>Stored locally · Private & secure</span>
         </div>
       </div>
     </motion.div>
