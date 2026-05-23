@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, Download, Copy } from "lucide-react";
+import { X, Download, Copy, WholeWord, Baseline, InfoIcon } from "lucide-react";
 import { useFontStore } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
@@ -8,17 +8,25 @@ import { Button } from "../ui/button";
 
 const SPECIMENS = [
   { size: 80, text: "Aa" },
-  { size: 64, text: "The quick brown fox" },
+  { size: 54, text: "The quick brown fox jumps over the lazy dog." },
   { size: 36, text: "ABCDEFGHIJKLMNOPQRSTUVWXYZ" },
   { size: 28, text: "abcdefghijklmnopqrstuvwxyz" },
   { size: 28, text: "0123456789 !@#$%^&*()" },
 ];
 
-const GLYPHS = Array.from({ length: 95 }, (_, i) => String.fromCharCode(32 + i));
+const GLYPHS = Array.from({ length: 95 }, (_, i) =>
+  String.fromCharCode(32 + i),
+);
 
-export function FontDetail({ id, onClose }: { id: string | null; onClose: () => void }) {
+export function FontDetail({
+  id,
+  onClose,
+}: {
+  id: string | null;
+  onClose: () => void;
+}) {
   const font = useFontStore((s) => s.fonts.find((f) => f.id === id));
-  const { fontSize, weight, lineHeight, letterSpacing, previewText } = useFontStore();
+  const { weight, lineHeight, letterSpacing } = useFontStore();
   const download = useFontStore((s) => s.downloadFont);
   const [tab, setTab] = useState<"specimen" | "glyphs" | "info">("specimen");
 
@@ -29,7 +37,10 @@ export function FontDetail({ id, onClose }: { id: string | null; onClose: () => 
     };
   }, [id]);
 
-  const fam = useMemo(() => (font ? `"${font.family}", system-ui` : ""), [font]);
+  const fam = useMemo(
+    () => (font ? `"${font.family}", system-ui` : ""),
+    [font],
+  );
 
   return (
     <AnimatePresence>
@@ -38,7 +49,7 @@ export function FontDetail({ id, onClose }: { id: string | null; onClose: () => 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/10 backdrop-blur-xs p-4"
           onClick={onClose}
         >
           <motion.div
@@ -51,7 +62,9 @@ export function FontDetail({ id, onClose }: { id: string | null; onClose: () => 
           >
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
               <div className="min-w-0">
-                <h2 className="truncate text-lg font-semibold">{font.originalName}</h2>
+                <h2 className="truncate text-lg font-semibold">
+                  {font.originalName}
+                </h2>
                 <p className="text-xs text-muted-foreground">
                   {font.format.toUpperCase()} · {humanSize(font.size)} · Added{" "}
                   {new Date(font.addedAt).toLocaleString()}
@@ -80,7 +93,12 @@ export function FontDetail({ id, onClose }: { id: string | null; onClose: () => 
                   </Button>
                 </div>
                 <div className="h-6 w-px bg-border" />
-                <Button size="icon" variant="destructive" onClick={onClose} title="Close">
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  onClick={onClose}
+                  title="Close"
+                >
                   <X size={16} />
                 </Button>
               </div>
@@ -89,16 +107,18 @@ export function FontDetail({ id, onClose }: { id: string | null; onClose: () => 
             <div className="flex gap-1 border-b border-border px-6">
               {(
                 [
-                  { k: "specimen", l: "Specimen" },
-                  { k: "glyphs", l: "Glyphs" },
-                  { k: "info", l: "Info" },
+                  { k: "specimen", l: "Specimen", i: <WholeWord size={16} /> },
+                  { k: "glyphs", l: "Glyphs", i: <Baseline size={16} /> },
+                  { k: "info", l: "Info", i: <InfoIcon size={16} /> },
                 ] as const
               ).map((t) => (
                 <button
                   key={t.k}
                   onClick={() => setTab(t.k)}
-                  className={`relative px-4 cursor-pointer py-3 text-sm transition ${tab === t.k ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`relative flex gap-2 px-4 items-center cursor-pointer py-3 text-sm transition ${tab === t.k ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
+                  {/* icons */}
+                  {t.i}
                   {t.l}
                   {tab === t.k && (
                     <motion.div
@@ -171,7 +191,9 @@ export function FontDetail({ id, onClose }: { id: string | null; onClose: () => 
 function Info({ k, v }: { k: string; v: string }) {
   return (
     <div className="rounded-xl border border-border bg-background p-4">
-      <dt className="text-xs uppercase tracking-wide text-muted-foreground">{k}</dt>
+      <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+        {k}
+      </dt>
       <dd className="mt-1 break-all font-medium">{v}</dd>
     </div>
   );

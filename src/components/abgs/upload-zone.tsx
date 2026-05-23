@@ -8,8 +8,6 @@ import { useState } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 
-const FORMATS = ["TTF", "OTF", "WOFF", "WOFF2", "EOT", "TTC", "FON"];
-
 export function UploadZone() {
   const addFiles = useFontStore((s) => s.addFiles);
   const [loading, setLoading] = useState(false);
@@ -38,7 +36,7 @@ export function UploadZone() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="mx-auto mb-7 max-w-7xl"
+      className="mx-auto mb-7 max-w-3xl"
     >
       {/* Enhanced drop zone */}
       <div
@@ -68,13 +66,13 @@ export function UploadZone() {
           )}
         </AnimatePresence>
 
-        <div className="flex flex-col items-center px-8 py-16">
+        <div className="flex flex-col items-center p-8">
           {/* Enhanced icon container */}
           <motion.div
             animate={isDragActive ? { scale: 1.1, y: -4 } : { scale: 1, y: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 22 }}
             className={`
-              relative mb-6 flex h-16 w-16 items-center justify-center rounded-2xl 
+              relative mb-6 flex h-16 w-16 items-center justify-center rounded-xl 
               transition-all duration-300
               ${
                 isDragActive
@@ -131,44 +129,26 @@ export function UploadZone() {
             />
           </div>
 
-          {/* Enhanced buttons */}
-          <div className="flex gap-3">
-            <Button
-              type="button"
-              onClick={open}
-              disabled={loading}
-              className="bg-indigo-600 text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-700 hover:shadow-indigo-500/30 dark:bg-indigo-500 dark:hover:bg-indigo-600"
-            >
-              <FileType size={16} className="mr-2" />
-              {loading ? "Loading..." : "Select Font Files"}
-            </Button>
-          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            onClick={open}
+            disabled={loading}
+            className="flex items-center"
+          >
+            <FileType size={23} />
+            <div>{loading ? "Loading..." : "Select Font Files"}</div>
+          </Button>
         </div>
       </div>
 
       {/* Enhanced footer */}
       <div className="mt-4 flex flex-wrap items-center justify-between px-2 gap-3">
-        {/* Format badges */}
-        <div className="flex flex-wrap gap-2">
-          {FORMATS.map((format, i) => (
-            <span
-              key={format}
-              className="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
-            >
-              {format}
-              {i < FORMATS.length - 1 && (
-                <span className="ml-1 text-neutral-400 dark:text-neutral-600">
-                  •
-                </span>
-              )}
-            </span>
-          ))}
-        </div>
-
         {/* Privacy badge */}
         <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-400">
           <ShieldCheck
-            size={14}
+            size={16}
             className="text-emerald-500 dark:text-emerald-400"
           />
           <span>Stored locally · Private & secure</span>

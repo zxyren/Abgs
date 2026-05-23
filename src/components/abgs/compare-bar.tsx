@@ -59,7 +59,7 @@ export function CompareModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/20 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/10 p-4 backdrop-blur-xs"
           onClick={onClose}
         >
           <motion.div
@@ -71,12 +71,9 @@ export function CompareModal({
           >
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
               <h2 className="text-lg font-semibold">Side-by-side comparison</h2>
-              <button
-                onClick={onClose}
-                className="rounded-lg p-2 hover:bg-accent"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <Button size="icon" variant="destructive" onClick={onClose}>
+                <X size={16} />
+              </Button>
             </div>
             <div
               className="grid flex-1 gap-4 overflow-auto px-6 pb-6 pt-4"
@@ -90,7 +87,7 @@ export function CompareModal({
                   key={f.id}
                   className="border border-foreground/30 rounded-2xl p-6"
                 >
-                  <div className="mb-4 text-xs text-muted-foreground">
+                  <div className="mb-4 text-sm font-semibold text-muted-foreground">
                     {f.originalName}
                   </div>
                   <div

@@ -89,20 +89,7 @@ export function Index() {
 
         <UploadZone />
 
-        {s.fonts.length === 0 ? (
-          <div className="mt-10 grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
-            {["Live preview", "Side-by-side", "Glyph viewer", "⌘K palette"].map(
-              (x) => (
-                <div
-                  key={x}
-                  className="rounded-2xl border border-border bg-card px-4 py-3 text-center text-muted-foreground shadow-soft"
-                >
-                  {x}
-                </div>
-              ),
-            )}
-          </div>
-        ) : (
+        {s.fonts.length > 0 && (
           <>
             <PreviewControls />
             <div className="mx-auto max-w-7xl px-4">
