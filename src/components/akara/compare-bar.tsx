@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { X } from "lucide-react";
+import { Button } from "../ui/button";
 
 export function CompareBar({ onOpen }: { onOpen: () => void }) {
   const selected = useFontStore((s) => s.selected);
@@ -20,19 +21,18 @@ export function CompareBar({ onOpen }: { onOpen: () => void }) {
           className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2"
         >
           <div className="glass flex items-center gap-2 rounded-full border border-border p-2 pl-4 shadow-float">
-            <span className="text-sm text-muted-foreground">{items.length} selected</span>
-            <button
+            <span className="text-sm text-muted-foreground">
+              {items.length} selected
+            </span>
+            <Button
               onClick={onOpen}
               className="rounded-full bg-foreground px-4 py-1.5 text-sm font-medium text-background"
             >
               Compare side-by-side
-            </button>
-            <button
-              onClick={clear}
-              className="rounded-full p-1.5 text-muted-foreground hover:bg-accent"
-            >
-              <X className="h-4 w-4" />
-            </button>
+            </Button>
+            <Button size="icon" variant="ghost" onClick={clear}>
+              <X size={16} />
+            </Button>
           </div>
         </motion.div>
       )}
@@ -40,10 +40,17 @@ export function CompareBar({ onOpen }: { onOpen: () => void }) {
   );
 }
 
-export function CompareModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function CompareModal({
+  open,
+  onClose,
+}: {
+  open: boolean;
+  onClose: () => void;
+}) {
   const selected = useFontStore((s) => s.selected);
   const fonts = useFontStore((s) => s.fonts);
-  const { previewText, fontSize, weight, lineHeight, letterSpacing } = useFontStore();
+  const { previewText, fontSize, weight, lineHeight, letterSpacing } =
+    useFontStore();
   const items = selected
     .map((id) => fonts.find((f) => f.id === id))
     .filter((item): item is FontItem => item !== undefined);
@@ -67,17 +74,27 @@ export function CompareModal({ open, onClose }: { open: boolean; onClose: () => 
           >
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
               <h2 className="text-lg font-semibold">Side-by-side comparison</h2>
-              <button onClick={onClose} className="rounded-lg p-2 hover:bg-accent">
+              <button
+                onClick={onClose}
+                className="rounded-lg p-2 hover:bg-accent"
+              >
                 <X className="h-4 w-4" />
               </button>
             </div>
             <div
               className="grid flex-1 overflow-auto"
-              style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
+              style={{
+                gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))`,
+              }}
             >
               {items.map((f) => (
-                <div key={f.id} className="border-r border-border p-6 last:border-r-0">
-                  <div className="mb-4 text-xs text-muted-foreground">{f.originalName}</div>
+                <div
+                  key={f.id}
+                  className="border-r border-border p-6 last:border-r-0"
+                >
+                  <div className="mb-4 text-xs text-muted-foreground">
+                    {f.originalName}
+                  </div>
                   <div
                     style={{
                       fontFamily: `"${f.family}", system-ui`,

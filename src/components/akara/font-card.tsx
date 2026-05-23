@@ -9,6 +9,7 @@ import {
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 interface Props {
   font: FontItem;
@@ -80,7 +81,7 @@ export function FontCard({ font, onOpen, view }: Props) {
             {font.format.toUpperCase()} · {humanSize(font.size)}
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="flex shrink-0 items-center gap-0.5">
           <IconBtn label="Compare" onClick={() => toggleSelected(font.id)}>
             <GitCompareArrows className="h-3.5 w-3.5" />
           </IconBtn>
@@ -89,9 +90,6 @@ export function FontCard({ font, onOpen, view }: Props) {
           </IconBtn>
           <IconBtn label="Download" onClick={() => download(font.id)}>
             <Download className="h-3.5 w-3.5" />
-          </IconBtn>
-          <IconBtn label="Expand" onClick={() => onOpen(font.id)}>
-            <Maximize2 className="h-3.5 w-3.5" />
           </IconBtn>
           <IconBtn label="Delete" onClick={() => remove(font.id)}>
             <Trash2 className="h-3.5 w-3.5" />
@@ -112,15 +110,17 @@ function IconBtn({
   label: string;
 }) {
   return (
-    <button
+    <Button
+      size="icon"
+      variant="outline"
       onClick={(e) => {
         e.stopPropagation();
         onClick();
       }}
       title={label}
-      className="rounded-md p-1.5 text-muted-foreground transition hover:bg-accent hover:text-foreground"
+      className="rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground"
     >
       {children}
-    </button>
+    </Button>
   );
 }
