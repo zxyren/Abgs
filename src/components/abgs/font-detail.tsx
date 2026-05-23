@@ -5,6 +5,13 @@ import { useFontStore } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { Separator } from "../ui/separator";
 
 const SPECIMENS = [
   { size: 80, text: "Aa" },
@@ -71,36 +78,54 @@ export function FontDetail({
                 </p>
               </div>
               <div className="flex items-center gap-5">
-                <div className="flex items-center gap-1">
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => {
-                      navigator.clipboard.writeText(font.originalName);
-                      toast.success("Copied");
-                    }}
-                    title="Copy name"
-                  >
-                    <Copy size={16} />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => download(font.id)}
-                    title="Download"
-                  >
-                    <Download size={16} />
-                  </Button>
-                </div>
-                <div className="h-6 w-px bg-border" />
-                <Button
-                  size="icon"
-                  variant="destructive"
-                  onClick={onClose}
-                  title="Close"
-                >
-                  <X size={16} />
-                </Button>
+                <TooltipProvider>
+                  <div className="flex items-center gap-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => {
+                            navigator.clipboard.writeText(font.originalName);
+                            toast.success("Copied");
+                          }}
+                          aria-label="Copy name"
+                        >
+                          <Copy size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">Copy name</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => download(font.id)}
+                          aria-label="Download"
+                        >
+                          <Download size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">Download</TooltipContent>
+                    </Tooltip>
+                    <Separator orientation="vertical" className="h-4 mx-2" />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="destructive"
+                          onClick={onClose}
+                          aria-label="Close"
+                        >
+                          <X size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">Close</TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
               </div>
             </div>
 

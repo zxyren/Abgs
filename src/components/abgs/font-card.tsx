@@ -4,13 +4,13 @@ import { useFontStore, type FontItem } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
-// 👇 Import your project's custom Tooltip elements
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { Separator } from "../ui/separator";
 
 interface Props {
   font: FontItem;
@@ -96,6 +96,7 @@ export function FontCard({ font, onOpen, view }: Props) {
             <IconBtn label="Download" onClick={() => download(font.id)}>
               <Download size={16} />
             </IconBtn>
+            <Separator orientation="vertical" className="h-4 mx-1" />
             <IconBtn label="Delete" onClick={() => remove(font.id)}>
               <Trash2 size={16} />
             </IconBtn>
