@@ -4,6 +4,13 @@ import { useFontStore, type FontItem } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+// 👇 Import your project's custom Tooltip elements
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 interface Props {
   font: FontItem;
@@ -52,12 +59,14 @@ export function FontCard({ font, onOpen, view }: Props) {
           <span
             className="block leading-tight"
             style={{
-              fontFamily: `"${font.family}", system-ui`,
+              fontFamily: `'${font.family}', system-ui`,
               fontSize: baseSize,
               lineHeight,
               letterSpacing: `${letterSpacing}px`,
               fontWeight: weight,
               textAlign: align,
+              fontFeatureSettings: "normal",
+              fontVariationSettings: "normal",
             }}
           >
             {sample}
@@ -75,20 +84,23 @@ export function FontCard({ font, onOpen, view }: Props) {
             {font.format.toUpperCase()} · {humanSize(font.size)}
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-0.5">
-          <IconBtn label="Compare" onClick={() => toggleSelected(font.id)}>
-            <GitCompareArrows size={16} />
-          </IconBtn>
-          <IconBtn label="Copy name" onClick={copyName}>
-            <Copy size={16} />
-          </IconBtn>
-          <IconBtn label="Download" onClick={() => download(font.id)}>
-            <Download size={16} />
-          </IconBtn>
-          <IconBtn label="Delete" onClick={() => remove(font.id)}>
-            <Trash2 size={16} />
-          </IconBtn>
-        </div>
+
+        <TooltipProvider delayDuration={200}>
+          <div className="flex shrink-0 items-center gap-0.5">
+            <IconBtn label="Compare" onClick={() => toggleSelected(font.id)}>
+              <GitCompareArrows size={16} />
+            </IconBtn>
+            <IconBtn label="Copy name" onClick={copyName}>
+              <Copy size={16} />
+            </IconBtn>
+            <IconBtn label="Download" onClick={() => download(font.id)}>
+              <Download size={16} />
+            </IconBtn>
+            <IconBtn label="Delete" onClick={() => remove(font.id)}>
+              <Trash2 size={16} />
+            </IconBtn>
+          </div>
+        </TooltipProvider>
       </div>
     </motion.div>
   );
@@ -104,17 +116,23 @@ function IconBtn({
   label: string;
 }) {
   return (
-    <Button
-      size="icon"
-      variant="outline"
-      onClick={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
-      title={label}
-      className="rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground"
-    >
-      {children}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          size="icon"
+          variant="outline"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          className="rounded-md text-muted-foreground transition hover:bg-accent hover:text-foreground"
+        >
+          {children}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="top" sideOffset={6} className="text-xs">
+        <p>{label}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }
