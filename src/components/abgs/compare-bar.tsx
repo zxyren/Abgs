@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 export function CompareBar({ onOpen }: { onOpen: () => void }) {
   const selected = useFontStore((s) => s.selected);
@@ -20,14 +21,11 @@ export function CompareBar({ onOpen }: { onOpen: () => void }) {
           exit={{ y: 80, opacity: 0 }}
           className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2"
         >
-          <div className="glass flex items-center gap-2 rounded-full border border-border p-2 pl-4 shadow-float">
-            <span className="text-sm text-muted-foreground">
+          <div className="glass flex items-center gap-2 rounded-lg border border-foreground/30 p-2 pl-4 shadow-float">
+            <span className="text-sm text-foreground">
               {items.length} selected
             </span>
-            <Button
-              onClick={onOpen}
-              className="rounded-full bg-foreground px-4 py-1.5 text-sm font-medium text-background"
-            >
+            <Button variant="outline" onClick={onOpen} className="rounded-full">
               Compare side-by-side
             </Button>
             <Button size="icon" variant="ghost" onClick={clear}>
@@ -82,15 +80,16 @@ export function CompareModal({
               </button>
             </div>
             <div
-              className="grid flex-1 overflow-auto"
+              className="grid flex-1 gap-4 overflow-auto px-6 pb-6 pt-4"
               style={{
-                gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))`,
+                gridTemplateColumns: `repeat(${Math.min(items.length, 4)}, minmax(0, 1fr))`,
+                gridAutoRows: "minmax(0, min-content)",
               }}
             >
               {items.map((f) => (
                 <div
                   key={f.id}
-                  className="border-r border-border p-6 last:border-r-0"
+                  className="border border-foreground/30 rounded-2xl p-6"
                 >
                   <div className="mb-4 text-xs text-muted-foreground">
                     {f.originalName}

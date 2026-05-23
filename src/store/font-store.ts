@@ -155,7 +155,7 @@ export const useFontStore = create<State>((set, get) => ({
     set({
       selected: s.includes(id)
         ? s.filter((x) => x !== id)
-        : [...s, id].slice(-4),
+        : [...s, id].slice(-8),
     });
   },
   clearSelected: () => set({ selected: [] }),
