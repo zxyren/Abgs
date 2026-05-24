@@ -62,13 +62,59 @@ export function FontDetail({
     [font],
   );
 
-  const infoItems = [
-    { label: "File name", value: font?.originalName ?? "" },
-    { label: "Family (internal)", value: font?.family ?? "" },
-    { label: "Format", value: font?.format.toUpperCase() ?? "" },
-    { label: "Size", value: humanSize(font?.size ?? 0) },
-    { label: "Added", value: font ? new Date(font.addedAt).toLocaleString() : "" },
-  ] as const;
+  const metadata = font?.metadata;
+
+  const infoItems: Array<{ label: string; value: string }> = font
+    ? [
+        { label: "File name", value: font.originalName },
+        { label: "Family (internal)", value: font.family },
+        { label: "Format", value: font.format.toUpperCase() },
+        { label: "Size", value: humanSize(font.size) },
+        { label: "Added", value: new Date(font.addedAt).toLocaleString() },
+        ...(metadata?.version
+          ? [{ label: "Version", value: metadata.version }]
+          : []),
+        ...(metadata?.designer
+          ? [{ label: "Creator", value: metadata.designer }]
+          : metadata?.manufacturer
+            ? [{ label: "Creator", value: metadata.manufacturer }]
+            : []),
+        ...(metadata?.copyright
+          ? [{ label: "Copyright", value: metadata.copyright }]
+          : []),
+        ...(metadata?.trademark
+          ? [{ label: "Trademark", value: metadata.trademark }]
+          : []),
+        ...(metadata?.license
+          ? [{ label: "License", value: metadata.license }]
+          : []),
+        ...(metadata?.vendorURL
+          ? [{ label: "Vendor URL", value: metadata.vendorURL }]
+          : []),
+        ...(metadata?.designerURL
+          ? [{ label: "Designer URL", value: metadata.designerURL }]
+          : []),
+        ...(metadata?.description
+          ? [{ label: "Description", value: metadata.description }]
+          : []),
+        ...(metadata?.createdAt
+          ? [
+              {
+                label: "Created",
+                value: new Date(metadata.createdAt).toLocaleString(),
+              },
+            ]
+          : []),
+        ...(metadata?.modifiedAt
+          ? [
+              {
+                label: "Modified",
+                value: new Date(metadata.modifiedAt).toLocaleString(),
+              },
+            ]
+          : []),
+      ]
+    : [];
 
   return (
     <AnimatePresence>
@@ -148,23 +194,23 @@ export function FontDetail({
             </div>
 
             <div className="flex gap-1 border-b border-border px-6">
-                {tabs.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setTab(item.id)}
-                    className={`relative flex gap-2 px-4 items-center cursor-pointer py-3 text-sm transition ${tab === item.id ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-                  >
-                    {item.icon}
-                    {item.label}
-                    {tab === item.id && (
-                      <motion.div
-                        layoutId="tab"
-                        className="absolute inset-x-3 -bottom-px h-0.5 bg-foreground"
-                      />
-                    )}
-                  </button>
-                ))}
-              </div>
+              {tabs.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setTab(item.id)}
+                  className={`relative flex gap-2 px-4 items-center cursor-pointer py-3 text-sm transition ${tab === item.id ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  {item.icon}
+                  {item.label}
+                  {tab === item.id && (
+                    <motion.div
+                      layoutId="tab"
+                      className="absolute inset-x-3 -bottom-px h-0.5 bg-foreground"
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
             <div className="flex-1 overflow-auto p-8">
               {tab === "specimen" && (
                 <div
@@ -206,7 +252,11 @@ export function FontDetail({
               {tab === "info" && (
                 <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
                   {infoItems.map((item) => (
-                    <InfoItem key={item.label} label={item.label} value={item.value} />
+                    <InfoItem
+                      key={item.label}
+                      label={item.label}
+                      value={item.value}
+                    />
                   ))}
                 </dl>
               )}

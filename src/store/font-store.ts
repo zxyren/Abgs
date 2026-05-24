@@ -10,7 +10,9 @@ import {
   sanitizeFamily,
   fontFormat,
   loadFont,
+  parseFontMetadata,
   unloadFont,
+  type FontMetadata,
 } from "@/lib/font-utils";
 
 export interface FontItem {
@@ -21,6 +23,7 @@ export interface FontItem {
   size: number;
   addedAt: number;
   tags: string[];
+  metadata?: FontMetadata;
 }
 
 export type ViewMode = "grid" | "list" | "compact";
@@ -83,16 +86,26 @@ export const useFontStore = create<State>((set, get) => ({
   hydrate: async () => {
     if (get().hydrated) return;
     const meta = ((await idbGet(META_KEY)) as FontItem[] | undefined) ?? [];
-    // Load all font data into FontFace
-    await Promise.all(
+
+    const loadedFonts = await Promise.all(
       meta.map(async (f) => {
         const data = (await idbGet(DATA_PREFIX + f.id)) as
           | ArrayBuffer
           | undefined;
-        if (data) await loadFont(f.family, data);
+
+        if (!data) return f;
+
+        if (!f.metadata) {
+          f = { ...f, metadata: parseFontMetadata(data) };
+        }
+
+        await loadFont(f.family, data);
+        return f;
       }),
     );
-    set({ fonts: meta, hydrated: true });
+
+    await idbSet(META_KEY, loadedFonts);
+    set({ fonts: loadedFonts, hydrated: true });
   },
 
   addFiles: async (files) => {
@@ -114,6 +127,7 @@ export const useFontStore = create<State>((set, get) => ({
         size: file.size,
         addedAt: Date.now(),
         tags: [],
+        metadata: parseFontMetadata(data),
       });
     }
     const next = [...additions, ...existing];
