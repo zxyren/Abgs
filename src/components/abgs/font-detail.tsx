@@ -269,12 +269,53 @@ export function FontDetail({
 }
 
 function InfoItem({ label, value }: { label: string; value: string }) {
+  const renderValue = (text: string) => {
+    const linkRegex =
+      /(https?:\/\/[^\s)]+|www\.[^\s)]+|[^\s@.,;:!?"'()]+@[^\s@.,;:!?"'()]+\.[^\s@.,;:!?"'()]+)/gi;
+    const urlOnlyRegex = /^(https?:\/\/[^\s)]+|www\.[^\s)]+)$/i;
+    const emailOnlyRegex =
+      /^[^\s@.,;:!?"'()]+@[^\s@.,;:!?"'()]+\.[^\s@.,;:!?"'()]+$/;
+
+    const parts = text.split(linkRegex);
+    if (parts.length === 1) return text;
+
+    return parts.map((part, index) => {
+      if (!part) return null;
+      if (emailOnlyRegex.test(part)) {
+        return (
+          <a
+            key={index}
+            href={`mailto:${part}`}
+            className="text-primary underline"
+          >
+            {part}
+          </a>
+        );
+      }
+      if (urlOnlyRegex.test(part)) {
+        const href = part.startsWith("http") ? part : `https://${part}`;
+        return (
+          <a
+            key={index}
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className="text-primary underline"
+          >
+            {part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
     <div className="rounded-xl border border-border bg-background p-4">
       <dt className="text-xs uppercase tracking-wide text-muted-foreground">
         {label}
       </dt>
-      <dd className="mt-1 break-all font-medium">{value}</dd>
+      <dd className="mt-1 break-all font-medium">{renderValue(value)}</dd>
     </div>
   );
 }
