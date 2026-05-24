@@ -311,7 +311,7 @@ function InfoItem({ label, value }: { label: string; value: string }) {
   };
 
   return (
-    <div className="border-b border-foreground/30 p-4">
+    <div className="p-4">
       <dt className="text-sm font-medium  uppercase tracking-wide text-muted-foreground">
         {label}
       </dt>
