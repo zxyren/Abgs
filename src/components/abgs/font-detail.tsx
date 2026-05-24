@@ -35,7 +35,20 @@ export function FontDetail({
   const font = useFontStore((s) => s.fonts.find((f) => f.id === id));
   const { weight, lineHeight, letterSpacing } = useFontStore();
   const download = useFontStore((s) => s.downloadFont);
-  const [tab, setTab] = useState<"specimen" | "glyphs" | "info">("specimen");
+
+  const copyText = (text: string, message = "Copied") => {
+    navigator.clipboard.writeText(text);
+    toast.success(message);
+  };
+
+  const tabs = [
+    { id: "specimen", label: "Specimen", icon: <WholeWord size={16} /> },
+    { id: "glyphs", label: "Glyphs", icon: <Baseline size={16} /> },
+    { id: "info", label: "Info", icon: <InfoIcon size={16} /> },
+  ] as const;
+
+  type Tab = (typeof tabs)[number]["id"];
+  const [tab, setTab] = useState<Tab>("specimen");
 
   useEffect(() => {
     if (id) document.body.style.overflow = "hidden";
@@ -44,10 +57,18 @@ export function FontDetail({
     };
   }, [id]);
 
-  const fam = useMemo(
+  const fontFamily = useMemo(
     () => (font ? `"${font.family}", system-ui` : ""),
     [font],
   );
+
+  const infoItems = [
+    { label: "File name", value: font?.originalName ?? "" },
+    { label: "Family (internal)", value: font?.family ?? "" },
+    { label: "Format", value: font?.format.toUpperCase() ?? "" },
+    { label: "Size", value: humanSize(font?.size ?? 0) },
+    { label: "Added", value: font ? new Date(font.addedAt).toLocaleString() : "" },
+  ] as const;
 
   return (
     <AnimatePresence>
@@ -85,10 +106,7 @@ export function FontDetail({
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => {
-                            navigator.clipboard.writeText(font.originalName);
-                            toast.success("Copied");
-                          }}
+                          onClick={() => copyText(font.originalName)}
                           aria-label="Copy name"
                         >
                           <Copy size={16} />
@@ -130,37 +148,29 @@ export function FontDetail({
             </div>
 
             <div className="flex gap-1 border-b border-border px-6">
-              {(
-                [
-                  { k: "specimen", l: "Specimen", i: <WholeWord size={16} /> },
-                  { k: "glyphs", l: "Glyphs", i: <Baseline size={16} /> },
-                  { k: "info", l: "Info", i: <InfoIcon size={16} /> },
-                ] as const
-              ).map((t) => (
-                <button
-                  key={t.k}
-                  onClick={() => setTab(t.k)}
-                  className={`relative flex gap-2 px-4 items-center cursor-pointer py-3 text-sm transition ${tab === t.k ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
-                >
-                  {/* icons */}
-                  {t.i}
-                  {t.l}
-                  {tab === t.k && (
-                    <motion.div
-                      layoutId="tab"
-                      className="absolute inset-x-3 -bottom-px h-0.5 bg-foreground"
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-
+                {tabs.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setTab(item.id)}
+                    className={`relative flex gap-2 px-4 items-center cursor-pointer py-3 text-sm transition ${tab === item.id ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                  >
+                    {item.icon}
+                    {item.label}
+                    {tab === item.id && (
+                      <motion.div
+                        layoutId="tab"
+                        className="absolute inset-x-3 -bottom-px h-0.5 bg-foreground"
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
             <div className="flex-1 overflow-auto p-8">
               {tab === "specimen" && (
                 <div
                   className="space-y-10"
                   style={{
-                    fontFamily: fam,
+                    fontFamily: fontFamily,
                     fontWeight: weight,
                     lineHeight,
                     letterSpacing: `${letterSpacing}px`,
@@ -180,15 +190,12 @@ export function FontDetail({
               {tab === "glyphs" && (
                 <div
                   className="grid grid-cols-8 gap-2 sm:grid-cols-12 md:grid-cols-16"
-                  style={{ fontFamily: fam }}
+                  style={{ fontFamily: fontFamily }}
                 >
                   {GLYPHS.map((g, i) => (
                     <button
                       key={i}
-                      onClick={() => {
-                        navigator.clipboard.writeText(g);
-                        toast.success(`Copied ${g}`);
-                      }}
+                      onClick={() => copyText(g, `Copied ${g}`)}
                       className="flex aspect-square items-center justify-center rounded-lg border border-border bg-background text-2xl transition hover:border-foreground/40 hover:bg-accent"
                     >
                       {g}
@@ -198,11 +205,9 @@ export function FontDetail({
               )}
               {tab === "info" && (
                 <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
-                  <Info k="File name" v={font.originalName} />
-                  <Info k="Family (internal)" v={font.family} />
-                  <Info k="Format" v={font.format.toUpperCase()} />
-                  <Info k="Size" v={humanSize(font.size)} />
-                  <Info k="Added" v={new Date(font.addedAt).toLocaleString()} />
+                  {infoItems.map((item) => (
+                    <InfoItem key={item.label} label={item.label} value={item.value} />
+                  ))}
                 </dl>
               )}
             </div>
@@ -213,13 +218,13 @@ export function FontDetail({
   );
 }
 
-function Info({ k, v }: { k: string; v: string }) {
+function InfoItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-border bg-background p-4">
       <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-        {k}
+        {label}
       </dt>
-      <dd className="mt-1 break-all font-medium">{v}</dd>
+      <dd className="mt-1 break-all font-medium">{value}</dd>
     </div>
   );
 }
