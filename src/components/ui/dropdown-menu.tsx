@@ -256,7 +256,7 @@ function DropdownMenuSubTrigger({
         disabled={disabled}
         data-inset={inset}
         className={cn(
-          "focus:text-accent-foreground data-[state=open]:text-accent-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[inset]:pl-8",
+          "focus:text-accent-foreground data-[state=open]:text-accent-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-inset:pl-8",
           "data-[state=open]:[&_[data-slot=chevron]]:rotate-90 [&_[data-slot=chevron]]:transition-transform [&_[data-slot=chevron]]:duration-300 [&_[data-slot=chevron]]:ease-in-out",
           className,
         )}
@@ -278,7 +278,7 @@ function DropdownMenuSubContent({
   return (
     <DropdownMenuSubContentPrimitive
       className={cn(
-        "bg-popover text-popover-foreground z-50 min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-lg outline-none",
+        "bg-popover text-popover-foreground z-50 min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-md border p-1 shadow-lg outline-none",
         className,
       )}
       {...props}

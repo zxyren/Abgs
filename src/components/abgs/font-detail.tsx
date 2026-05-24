@@ -238,13 +238,13 @@ export function FontDetail({
                   className="grid grid-cols-8 gap-2 sm:grid-cols-12 md:grid-cols-16"
                   style={{ fontFamily: fontFamily }}
                 >
-                  {GLYPHS.map((g, i) => (
+                  {GLYPHS.map((glyph, i) => (
                     <button
                       key={i}
-                      onClick={() => copyText(g, `Copied ${g}`)}
-                      className="flex aspect-square items-center justify-center rounded-lg border border-border bg-background text-2xl transition hover:border-foreground/40 hover:bg-accent"
+                      onClick={() => copyText(glyph, `Copied ${glyph}`)}
+                      className="flex aspect-square cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-2xl transition hover:border-foreground/40 hover:bg-accent"
                     >
-                      {g}
+                      {glyph}
                     </button>
                   ))}
                 </div>
@@ -311,11 +311,13 @@ function InfoItem({ label, value }: { label: string; value: string }) {
   };
 
   return (
-    <div className="rounded-xl border border-border bg-background p-4">
-      <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+    <div className="border-b border-foreground/30 p-4">
+      <dt className="text-sm font-medium  uppercase tracking-wide text-muted-foreground">
         {label}
       </dt>
-      <dd className="mt-1 break-all font-medium">{renderValue(value)}</dd>
+      <dd className="mt-1 text-base break-all font-medium">
+        {renderValue(value)}
+      </dd>
     </div>
   );
 }

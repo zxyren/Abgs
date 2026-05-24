@@ -2,6 +2,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export function CompareBar({ onOpen }: { onOpen: () => void }) {
   const selected = useFontStore((s) => s.selected);
@@ -71,9 +77,18 @@ export function CompareModal({
           >
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
               <h2 className="text-lg font-semibold">Side-by-side comparison</h2>
-              <Button size="icon" variant="destructive" onClick={onClose}>
-                <X size={16} />
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button size="icon" variant="destructive" onClick={onClose}>
+                      <X size={16} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">
+                    <p>Close</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <div
               className="grid flex-1 gap-4 overflow-auto px-6 pb-6 pt-4"
