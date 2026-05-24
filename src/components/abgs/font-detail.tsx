@@ -42,9 +42,9 @@ export function FontDetail({
   };
 
   const tabs = [
-    { id: "specimen", label: "Specimen", icon: <WholeWord size={16} /> },
-    { id: "glyphs", label: "Glyphs", icon: <Baseline size={16} /> },
-    { id: "info", label: "Info", icon: <InfoIcon size={16} /> },
+    { id: "specimen", label: "Specimen", icon: <WholeWord size={20} /> },
+    { id: "glyphs", label: "Glyphs", icon: <Baseline size={20} /> },
+    { id: "info", label: "Info", icon: <InfoIcon size={20} /> },
   ] as const;
 
   type Tab = (typeof tabs)[number]["id"];
@@ -198,7 +198,7 @@ export function FontDetail({
                 <button
                   key={item.id}
                   onClick={() => setTab(item.id)}
-                  className={`relative flex gap-2 px-4 items-center cursor-pointer py-3 text-sm transition ${tab === item.id ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`relative flex gap-2 font-medium px-4 items-center cursor-pointer py-3 text-sm transition ${tab === item.id ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   {item.icon}
                   {item.label}
