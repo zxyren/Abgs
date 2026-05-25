@@ -42,9 +42,11 @@ function getString(data: Uint8Array, isUtf16Be: boolean) {
     for (let i = 0; i + 1 < data.length; i += 2) {
       text += String.fromCharCode((data[i] << 8) | data[i + 1]);
     }
+    // eslint-disable-next-line no-control-regex
     return text.replace(/\u0000+$/, "");
   }
 
+  // eslint-disable-next-line no-control-regex
   return String.fromCharCode(...data).replace(/\u0000+$/, "");
 }
 
@@ -157,9 +159,11 @@ export function parseFontMetadata(data: ArrayBuffer): FontMetadata {
 }
 
 const loaded = new Map<string, FontFace>();
+const loading = new Set<string>();
 
 export async function loadFont(family: string, data: ArrayBuffer) {
-  if (loaded.has(family)) return;
+  if (loaded.has(family) || loading.has(family)) return;
+  loading.add(family);
   try {
     const face = new FontFace(family, data);
     await face.load();
@@ -168,6 +172,8 @@ export async function loadFont(family: string, data: ArrayBuffer) {
     loaded.set(family, face);
   } catch (e) {
     console.warn("Failed to load font", family, e);
+  } finally {
+    loading.delete(family);
   }
 }
 
@@ -178,4 +184,8 @@ export function unloadFont(family: string) {
     doc.fonts.delete(face);
     loaded.delete(family);
   }
+}
+
+export function isFontLoaded(family: string): boolean {
+  return loaded.has(family) || loading.has(family);
 }

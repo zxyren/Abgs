@@ -12,10 +12,13 @@ function brandedErrorResponse(): Response {
 export default {
   async fetch(request: Request) {
     try {
-      return new Response("App entry not configured for server-side rendering.", {
-        status: 200,
-        headers: { "content-type": "text/plain; charset=utf-8" },
-      });
+      return new Response(
+        "App entry not configured for server-side rendering.",
+        {
+          status: 200,
+          headers: { "content-type": "text/plain; charset=utf-8" },
+        },
+      );
     } catch (error) {
       console.error(error);
       return brandedErrorResponse();

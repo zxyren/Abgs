@@ -12,6 +12,7 @@ import {
   loadFont,
   parseFontMetadata,
   unloadFont,
+  isFontLoaded,
   type FontMetadata,
 } from "@/lib/font-utils";
 
@@ -32,6 +33,7 @@ export type SortKey = "name" | "recent" | "size";
 interface State {
   fonts: FontItem[];
   hydrated: boolean;
+  uploadProgress: { current: number; total: number } | null;
   previewText: string;
   fontSize: number;
   lineHeight: number;
@@ -48,6 +50,7 @@ interface State {
 
   hydrate: () => Promise<void>;
   addFiles: (files: File[]) => Promise<void>;
+  loadFontOnDemand: (id: string) => Promise<void>;
   remove: (id: string) => Promise<void>;
   rename: (id: string, family: string) => void;
   downloadFont: (id: string) => Promise<void>;
@@ -59,10 +62,12 @@ interface State {
 
 const META_KEY = "abgs:fonts";
 const DATA_PREFIX = "abgs:data:";
+const loadingIds = new Set<string>();
 
 export const useFontStore = create<State>((set, get) => ({
   fonts: [],
   hydrated: false,
+  uploadProgress: null,
   previewText: "The quick brown fox jumps over the lazy dog",
   fontSize: 32,
   lineHeight: 1.3,
@@ -86,53 +91,80 @@ export const useFontStore = create<State>((set, get) => ({
   hydrate: async () => {
     if (get().hydrated) return;
     const meta = ((await idbGet(META_KEY)) as FontItem[] | undefined) ?? [];
-
-    const loadedFonts = await Promise.all(
-      meta.map(async (f) => {
-        const data = (await idbGet(DATA_PREFIX + f.id)) as
-          | ArrayBuffer
-          | undefined;
-
-        if (!data) return f;
-
-        if (!f.metadata) {
-          f = { ...f, metadata: parseFontMetadata(data) };
-        }
-
-        await loadFont(f.family, data);
-        return f;
-      }),
-    );
-
-    await idbSet(META_KEY, loadedFonts);
-    set({ fonts: loadedFonts, hydrated: true });
+    set({ fonts: meta, hydrated: true });
   },
 
   addFiles: async (files) => {
     const fontFiles = files.filter((f) => isFontFile(f.name));
+    if (!fontFiles.length) return;
+
+    set({ uploadProgress: { current: 0, total: fontFiles.length } });
+
     const existing = get().fonts;
     const additions: FontItem[] = [];
-    for (const file of fontFiles) {
-      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-      const familyBase = sanitizeFamily(file.name);
-      const family = `${familyBase}_${id.slice(-4)}`;
-      const data = await file.arrayBuffer();
-      await loadFont(family, data);
-      await idbSet(DATA_PREFIX + id, data);
-      additions.push({
-        id,
-        family,
-        originalName: file.name,
-        format: fontFormat(file.name),
-        size: file.size,
-        addedAt: Date.now(),
-        tags: [],
-        metadata: parseFontMetadata(data),
+    const batchSize = 15;
+
+    for (let i = 0; i < fontFiles.length; i += batchSize) {
+      const batch = fontFiles.slice(i, i + batchSize);
+
+      const batchResults = await Promise.all(
+        batch.map(async (file) => {
+          try {
+            const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+            const familyBase = sanitizeFamily(file.name);
+            const family = `${familyBase}_${id.slice(-4)}`;
+            const data = await file.arrayBuffer();
+            const metadata = parseFontMetadata(data);
+            await idbSet(DATA_PREFIX + id, data);
+            return {
+              id,
+              family,
+              originalName: file.name,
+              format: fontFormat(file.name),
+              size: file.size,
+              addedAt: Date.now(),
+              tags: [],
+              metadata,
+            } as FontItem;
+          } catch (e) {
+            console.error("Failed to process font file:", file.name, e);
+            return null;
+          }
+        }),
+      );
+
+      const valid = batchResults.filter((f): f is FontItem => f !== null);
+      additions.push(...valid);
+
+      set({
+        uploadProgress: {
+          current: Math.min(i + batch.length, fontFiles.length),
+          total: fontFiles.length,
+        },
       });
     }
+
     const next = [...additions, ...existing];
     await idbSet(META_KEY, next);
-    set({ fonts: next });
+    set({ fonts: next, uploadProgress: null });
+  },
+
+  loadFontOnDemand: async (id) => {
+    const font = get().fonts.find((f) => f.id === id);
+    if (!font) return;
+    if (isFontLoaded(font.family) || loadingIds.has(id)) return;
+
+    loadingIds.add(id);
+    try {
+      const data = (await idbGet(DATA_PREFIX + id)) as ArrayBuffer | undefined;
+      if (data) {
+        await loadFont(font.family, data);
+      }
+    } catch (e) {
+      console.warn("Failed to load font on demand:", font.family, e);
+    } finally {
+      loadingIds.delete(id);
+    }
   },
 
   remove: async (id) => {

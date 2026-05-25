@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { X } from "lucide-react";
@@ -55,9 +56,18 @@ export function CompareModal({
   const fonts = useFontStore((s) => s.fonts);
   const { previewText, fontSize, weight, lineHeight, letterSpacing } =
     useFontStore();
+  const loadFontOnDemand = useFontStore((s) => s.loadFontOnDemand);
   const items = selected
     .map((id) => fonts.find((f) => f.id === id))
     .filter((item): item is FontItem => item !== undefined);
+
+  useEffect(() => {
+    if (open) {
+      items.forEach((item) => {
+        loadFontOnDemand(item.id);
+      });
+    }
+  }, [open, items, loadFontOnDemand]);
 
   return (
     <AnimatePresence>

@@ -35,6 +35,7 @@ export function FontDetail({
   const font = useFontStore((s) => s.fonts.find((f) => f.id === id));
   const { weight, lineHeight, letterSpacing } = useFontStore();
   const download = useFontStore((s) => s.downloadFont);
+  const loadFontOnDemand = useFontStore((s) => s.loadFontOnDemand);
 
   const copyText = (text: string, message = "Copied") => {
     navigator.clipboard.writeText(text);
@@ -51,11 +52,14 @@ export function FontDetail({
   const [tab, setTab] = useState<Tab>("specimen");
 
   useEffect(() => {
-    if (id) document.body.style.overflow = "hidden";
+    if (id) {
+      document.body.style.overflow = "hidden";
+      loadFontOnDemand(id);
+    }
     return () => {
       document.body.style.overflow = "";
     };
-  }, [id]);
+  }, [id, loadFontOnDemand]);
 
   const fontFamily = useMemo(
     () => (font ? `"${font.family}", system-ui` : ""),

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Copy, Download, Trash2, GitCompareArrows } from "lucide-react";
 import { useFontStore, type FontItem } from "@/store/font-store";
@@ -25,6 +26,11 @@ export function FontCard({ font, onOpen, view }: Props) {
   const download = useFontStore((s) => s.downloadFont);
   const toggleSelected = useFontStore((s) => s.toggleSelected);
   const selected = useFontStore((s) => s.selected.includes(font.id));
+  const loadFontOnDemand = useFontStore((s) => s.loadFontOnDemand);
+
+  useEffect(() => {
+    loadFontOnDemand(font.id);
+  }, [font.id, loadFontOnDemand]);
 
   const sample = previewText || font.originalName;
   const baseSize = view === "compact" ? 22 : view === "list" ? 32 : fontSize;
