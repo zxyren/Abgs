@@ -105,7 +105,7 @@ export function Index() {
           </div>
           <div className="h-2 w-64 overflow-hidden rounded-full bg-accent">
             <div
-              className="h-full bg-indigo-600 transition-all duration-300 ease-out dark:bg-indigo-400"
+              className="h-full bg-primary transition-all duration-300 ease-out"
               style={{
                 width: `${(s.uploadProgress.current / s.uploadProgress.total) * 100}%`,
               }}

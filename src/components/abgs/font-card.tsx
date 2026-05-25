@@ -83,10 +83,10 @@ export function FontCard({ font, onOpen, view }: Props) {
       {/* Footer */}
       <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
         <div className="min-w-0 mr-2">
-          <div className="truncate text-[13px] font-medium leading-tight">
+          <div className="truncate text-base font-semibold leading-tight">
             {font.originalName}
           </div>
-          <div className="text-[11px] text-muted-foreground">
+          <div className="text-sm text-muted-foreground">
             {font.format.toUpperCase()} · {humanSize(font.size)}
           </div>
         </div>
