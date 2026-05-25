@@ -27,11 +27,12 @@ export function CompareBar({ onOpen }: { onOpen: () => void }) {
           className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2"
         >
           <div className="glass flex items-center gap-2 rounded-lg border border-foreground/30 p-2 pl-4 shadow-float">
-            <span className="text-sm text-foreground">
-              {items.length} selected
+            <span className="text-sm flex gap-1 text-foreground">
+              <span className="font-bold">{items.length}</span>
+              <span>selected</span>
             </span>
             <Button variant="outline" onClick={onOpen} className="rounded-full">
-              Compare side-by-side
+              Compare
             </Button>
             <Button size="icon" variant="ghost" onClick={clear}>
               <X size={16} />
