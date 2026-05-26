@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Copy, Download, Trash2, GitCompareArrows } from "lucide-react";
-import { Range } from "@/components/ui/slider";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Copy,
+  Download,
+  Trash2,
+  GitCompareArrows,
+  Info,
+  RotateCcw,
+} from "lucide-react";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
@@ -13,6 +18,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { Separator } from "../ui/separator";
+import { Range } from "@/components/ui/slider";
 
 interface Props {
   font: FontItem;
@@ -21,22 +27,13 @@ interface Props {
 
 export function FontCard({ font, onOpen }: Props) {
   const {
-    previewText: globalPreviewText,
     fontSize: globalFontSize,
     lineHeight: globalLineHeight,
     letterSpacing: globalLetterSpacing,
     weight: globalWeight,
     align,
   } = useFontStore();
-  const [localPreviewText, setLocalPreviewText] = useState<string>(
-    font.originalName,
-  );
-  const [localFontSize, setLocalFontSize] = useState<number>(globalFontSize);
-  const [localWeight, setLocalWeight] = useState<number>(globalWeight);
-  const [localLineHeight, setLocalLineHeight] =
-    useState<number>(globalLineHeight);
-  const [localLetterSpacing, setLocalLetterSpacing] =
-    useState<number>(globalLetterSpacing);
+
   const remove = useFontStore((s) => s.remove);
   const download = useFontStore((s) => s.downloadFont);
   const toggleSelected = useFontStore((s) => s.toggleSelected);
@@ -47,9 +44,76 @@ export function FontCard({ font, onOpen }: Props) {
     loadFontOnDemand(font.id);
   }, [font.id, loadFontOnDemand]);
 
-  const sample = localPreviewText || font.originalName;
-  const baseSize = localFontSize;
-  const previewHeight = 140;
+  // ── Live values as refs (no re-render on drag) ──────────────────────────
+  const liveRef = useRef({
+    fontSize: globalFontSize,
+    weight: globalWeight,
+    lineHeight: globalLineHeight,
+    letterSpacing: globalLetterSpacing,
+  });
+
+  // State is only used to trigger a re-render when slider is released
+  const [committed, setCommitted] = useState({ ...liveRef.current });
+
+  const previewTextRef = useRef(font.originalName);
+  const [previewText, _setPreviewText] = useState(font.originalName);
+  const setPreviewText = (v: string) => {
+    previewTextRef.current = v;
+    _setPreviewText(v);
+  };
+
+  // Refs for DOM nodes we mutate directly
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const previewStyle = useRef<CSSStyleDeclaration | null>(null);
+
+  useEffect(() => {
+    if (textareaRef.current) previewStyle.current = textareaRef.current.style;
+  }, []);
+
+  // Apply style directly to DOM — zero React overhead
+  const applyStyle = useCallback(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    const { fontSize, weight, lineHeight, letterSpacing } = liveRef.current;
+    el.style.fontSize = `${fontSize}px`;
+    el.style.fontWeight = String(weight);
+    el.style.lineHeight = String(lineHeight);
+    el.style.letterSpacing = `${letterSpacing}px`;
+    // auto-resize height
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, []);
+
+  // Auto-resize on text change
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }, [previewText]);
+
+  function makeLiveHandler(key: keyof typeof liveRef.current) {
+    return (v: number) => {
+      liveRef.current[key] = v;
+      applyStyle();
+    };
+  }
+
+  function makeCommitHandler(key: keyof typeof liveRef.current) {
+    return () => setCommitted({ ...liveRef.current });
+  }
+
+  function resetSettings() {
+    liveRef.current = {
+      fontSize: globalFontSize,
+      weight: globalWeight,
+      lineHeight: globalLineHeight,
+      letterSpacing: globalLetterSpacing,
+    };
+    applyStyle();
+    setCommitted({ ...liveRef.current });
+    setPreviewText(font.originalName);
+  }
 
   function copyName() {
     navigator.clipboard.writeText(font.originalName);
@@ -57,96 +121,98 @@ export function FontCard({ font, onOpen }: Props) {
   }
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.5 }}
-      className={`group relative overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-float ${
+    <div
+      className={`w-full relative overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-float ${
         selected ? "ring-2 ring-foreground" : ""
       }`}
     >
-      {/* Preview area — fixed height, text clipped */}
-      <div onClick={() => onOpen(font.id)} className="block w-full text-left">
-        <div
-          className="relative overflow-hidden px-5 py-5"
-          style={{ height: previewHeight }}
-        >
-          {/* Fade-out mask at the bottom */}
-          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-card to-transparent" />
-          <span
-            className="block leading-tight"
-            style={{
-              fontFamily: `'${font.family}', system-ui`,
-              fontSize: baseSize,
-              lineHeight: localLineHeight,
-              letterSpacing: `${localLetterSpacing}px`,
-              fontWeight: localWeight,
-              textAlign: align,
-              fontFeatureSettings: "normal",
-              fontVariationSettings: "normal",
-            }}
-          >
-            {sample}
-          </span>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
-        <div className="min-w-0 mr-2">
-          <div className="truncate text-base font-semibold leading-tight">
+      {/* ── Top bar: file name + meta + Detail & Reset buttons ── */}
+      <div className="flex items-center justify-between px-4 pt-3 pb-1 gap-2">
+        <div className="min-w-0">
+          <div className="truncate text-sm font-semibold leading-tight">
             {font.originalName}
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-xs text-muted-foreground mt-0.5">
             {font.format.toUpperCase()} · {humanSize(font.size)}
-          </div>
-        </div>
-        <div className="flex-1 ml-4">
-          <div className="mb-2">
-            <input
-              value={localPreviewText}
-              onChange={(e) => setLocalPreviewText(e.target.value)}
-              placeholder="Type to preview"
-              className="w-full rounded-sm border border-border bg-background px-2 py-1 text-sm outline-none"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Range
-              value={localFontSize}
-              min={12}
-              max={200}
-              step={1}
-              suffix="px"
-              onChange={(v) => setLocalFontSize(v)}
-            />
-            <Range
-              value={localWeight}
-              min={100}
-              max={900}
-              step={100}
-              onChange={(v) => setLocalWeight(v)}
-            />
-            <Range
-              value={localLineHeight}
-              min={0.8}
-              max={3}
-              step={0.05}
-              onChange={(v) => setLocalLineHeight(v)}
-            />
-            <Range
-              value={localLetterSpacing}
-              min={-5}
-              max={20}
-              step={0.1}
-              suffix="px"
-              onChange={(v) => setLocalLetterSpacing(v)}
-            />
           </div>
         </div>
 
         <TooltipProvider delayDuration={200}>
           <div className="flex shrink-0 items-center gap-0.5">
+            <IconBtn label="Details" onClick={() => onOpen(font.id)}>
+              <Info size={15} />
+            </IconBtn>
+            <IconBtn label="Reset settings" onClick={resetSettings}>
+              <RotateCcw size={15} />
+            </IconBtn>
+          </div>
+        </TooltipProvider>
+      </div>
+
+      {/* ── Editable preview ── */}
+      <div className="relative px-4 py-3 min-h-[90px]">
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-card to-transparent z-10" />
+        <textarea
+          ref={textareaRef}
+          rows={1}
+          value={previewText}
+          onChange={(e) => setPreviewText(e.target.value)}
+          placeholder="Type to preview…"
+          className="block w-full resize-none overflow-hidden bg-transparent outline-none leading-tight placeholder:opacity-30 cursor-text"
+          style={{
+            fontFamily: `'${font.family}', system-ui`,
+            fontSize: committed.fontSize,
+            lineHeight: committed.lineHeight,
+            letterSpacing: `${committed.letterSpacing}px`,
+            fontWeight: committed.weight,
+            textAlign: align,
+          }}
+        />
+      </div>
+
+      {/* ── Footer: sliders + action icons ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 border-t border-border px-4 py-3">
+        {/* Sliders */}
+        <div className="flex-1 grid grid-cols-2 gap-x-4 gap-y-2">
+          <Range
+            value={committed.fontSize}
+            min={12}
+            max={200}
+            step={1}
+            suffix="px"
+            onChange={makeLiveHandler("fontSize")}
+            onChangeEnd={makeCommitHandler("fontSize")}
+          />
+          <Range
+            value={committed.weight}
+            min={100}
+            max={900}
+            step={100}
+            onChange={makeLiveHandler("weight")}
+            onChangeEnd={makeCommitHandler("weight")}
+          />
+          <Range
+            value={committed.lineHeight}
+            min={0.8}
+            max={3}
+            step={0.05}
+            onChange={makeLiveHandler("lineHeight")}
+            onChangeEnd={makeCommitHandler("lineHeight")}
+          />
+          <Range
+            value={committed.letterSpacing}
+            min={-5}
+            max={20}
+            step={0.1}
+            suffix="px"
+            onChange={makeLiveHandler("letterSpacing")}
+            onChangeEnd={makeCommitHandler("letterSpacing")}
+          />
+        </div>
+
+        {/* Action icons */}
+        <TooltipProvider delayDuration={200}>
+          <div className="flex shrink-0 items-center gap-0.5 self-end sm:self-auto">
             <IconBtn label="Compare" onClick={() => toggleSelected(font.id)}>
               <GitCompareArrows size={16} />
             </IconBtn>
@@ -163,7 +229,7 @@ export function FontCard({ font, onOpen }: Props) {
           </div>
         </TooltipProvider>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

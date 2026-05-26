@@ -113,7 +113,7 @@ export function Index() {
         <Toolbar />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 pt-8">
+      <div className="w-full px-4 pt-8">
         <div className="mb-10 text-center">
           <p className="mb-2 text-sm text-muted-foreground">
             Typography preview studio
@@ -131,7 +131,7 @@ export function Index() {
 
         {s.fonts.length > 0 && (
           <>
-            <div className="mx-auto max-w-7xl px-4">
+            <div className="w-full px-4">
               <div className="mb-3 flex items-end justify-between">
                 <h2 className="text-sm text-muted-foreground">
                   {visible.length} of {s.fonts.length} font

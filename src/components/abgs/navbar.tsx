@@ -26,7 +26,7 @@ const sorts: { key: SortKey; label: string }[] = [
 export function Toolbar() {
   const s = useFontStore();
   return (
-    <div className="sticky top-4 z-30 mx-auto mb-6 max-w-7xl px-4">
+    <div className="sticky top-4 z-30 mb-6 w-full px-4">
       <div className="glass flex flex-wrap items-center gap-2 rounded-lg border border-border p-4 shadow-soft">
         <div className="flex items-center gap-2">
           <img

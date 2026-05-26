@@ -1,9 +1,13 @@
+import { LucideIcon } from "lucide-react";
+import { useState } from "react";
+
 interface SliderProps {
   value: number;
   min: number;
   max: number;
   step: number;
   onChange: (v: number) => void;
+  onChangeEnd?: () => void;
   className?: string;
 }
 
@@ -13,15 +17,14 @@ export function Slider({
   max,
   step,
   onChange,
+  onChangeEnd,
   className = "",
 }: SliderProps) {
   const percent = ((value - min) / (max - min)) * 100;
 
   return (
     <div className={`relative flex h-9 w-full items-center ${className}`}>
-      {/* Track background */}
       <div className="relative h-0.5 w-full rounded-full bg-border/40">
-        {/* Filled portion */}
         <div
           className="absolute left-0 top-0 h-full rounded-full bg-foreground"
           style={{ width: `${percent}%` }}
@@ -35,19 +38,17 @@ export function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
+        onPointerUp={onChangeEnd}
         className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
       />
 
-      {/* Custom thumb */}
       <div
-        className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-popover border border-foreground shadow-sm transition-transform duration-75"
+        className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-popover border border-foreground shadow-sm"
         style={{ left: `${percent}%` }}
       />
     </div>
   );
 }
-
-import { LucideIcon } from "lucide-react";
 
 interface RangeProps {
   icon?: LucideIcon;
@@ -56,6 +57,7 @@ interface RangeProps {
   max: number;
   step: number;
   onChange: (v: number) => void;
+  onChangeEnd?: () => void;
   suffix?: string;
 }
 
@@ -66,11 +68,20 @@ export function Range({
   max,
   step,
   onChange,
+  onChangeEnd,
   suffix = "",
 }: RangeProps) {
+  // Own the live value here so both the label and thumb update every drag tick
+  const [localValue, setLocalValue] = useState(value);
+
+  function handleChange(v: number) {
+    setLocalValue(v);
+    onChange(v);
+  }
+
   const display = Number.isInteger(step)
-    ? value.toString()
-    : value.toFixed(step < 0.1 ? 2 : 1);
+    ? localValue.toString()
+    : localValue.toFixed(step < 0.1 ? 2 : 1);
 
   return (
     <div>
@@ -82,11 +93,12 @@ export function Range({
         </span>
       </div>
       <Slider
-        value={value}
+        value={localValue}
         min={min}
         max={max}
         step={step}
-        onChange={onChange}
+        onChange={handleChange}
+        onChangeEnd={onChangeEnd}
       />
     </div>
   );
