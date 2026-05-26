@@ -20,10 +20,10 @@ export function Slider({
   return (
     <div className={`relative flex h-9 w-full items-center ${className}`}>
       {/* Track background */}
-      <div className="relative h-1 w-full rounded-full bg-border/40">
+      <div className="relative h-0.5 w-full rounded-full bg-border/40">
         {/* Filled portion */}
         <div
-          className="absolute left-0 top-0 h-full rounded-full bg-primary"
+          className="absolute left-0 top-0 h-full rounded-full bg-foreground"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -40,7 +40,7 @@ export function Slider({
 
       {/* Custom thumb */}
       <div
-        className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground border border-border shadow-sm transition-transform duration-75"
+        className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-popover border border-foreground shadow-sm transition-transform duration-75"
         style={{ left: `${percent}%` }}
       />
     </div>

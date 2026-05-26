@@ -29,6 +29,13 @@ export function UploadZone() {
     multiple: true,
     noClick: true,
     onDrop,
+    accept: {
+      'font/*': ['.ttf', '.otf', '.woff', '.woff2'],
+      'application/x-font-ttf': ['.ttf'],
+      'application/x-font-opentype': ['.otf'],
+      'font/woff': ['.woff'],
+      'font/woff2': ['.woff2'],
+    },
   });
 
   return (
