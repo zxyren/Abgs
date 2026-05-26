@@ -85,9 +85,7 @@ export function Toolbar() {
         </Select>
 
         <TooltipProvider>
-          <div className="flex h-10 items-center rounded-sm border border-border bg-background p-1">
-            <div className="w-0" />
-          </div>
+          <Separator orientation="vertical" className="mx-1 h-6" />
           <Tooltip>
             <TooltipTrigger asChild>
               <Button

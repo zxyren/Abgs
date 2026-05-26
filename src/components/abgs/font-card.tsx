@@ -122,7 +122,7 @@ export function FontCard({ font, onOpen }: Props) {
 
   return (
     <div
-      className={`w-full relative overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-float ${
+      className={`w-full relative overflow-hidden hover:border hover:border-foreground border border-border bg-card transition-all duration-100 hover:shadow-float ${
         selected ? "ring-2 ring-foreground" : ""
       }`}
     >
@@ -150,8 +150,8 @@ export function FontCard({ font, onOpen }: Props) {
       </div>
 
       {/* ── Editable preview ── */}
-      <div className="relative px-4 py-3 min-h-[90px]">
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-card to-transparent z-10" />
+      <div className="relative px-4 py-3 min-h-24">
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-card to-transparent z-10" />
         <textarea
           ref={textareaRef}
           rows={1}

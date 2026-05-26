@@ -4,7 +4,6 @@ import { AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { useFontStore } from "@/store/font-store";
 import { Toolbar } from "@/components/abgs/navbar";
-// PreviewControls moved into each FontCard
 import { UploadZone } from "@/components/abgs/upload-zone";
 import { FontCard } from "@/components/abgs/font-card";
 import { FontDetail } from "@/components/abgs/font-detail";
@@ -138,7 +137,7 @@ export function Index() {
                   {s.fonts.length === 1 ? "" : "s"}
                 </h2>
               </div>
-              <div className={`grid gap-4 ${gridClass}`}>
+              <div className={`grid ${gridClass}`}>
                 <AnimatePresence mode="popLayout">
                   {paginatedVisible.map((f) => (
                     <FontCard key={f.id} font={f} onOpen={setOpenId} />
