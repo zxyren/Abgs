@@ -7,6 +7,10 @@ import {
   AlignRight,
   RotateCcw,
   Languages,
+  Bold,
+  MoveHorizontal,
+  MoveDiagonal,
+  MoveVertical,
 } from "lucide-react";
 import { Range } from "@/components/ui/slider";
 import { Button } from "../ui/button";
@@ -100,7 +104,7 @@ export function PreviewControls() {
 
         <div className="grid grid-cols-2 gap-7 md:grid-cols-5">
           <Range
-            label="Size"
+            icon={MoveDiagonal}
             value={fontSize}
             min={12}
             max={200}
@@ -109,7 +113,7 @@ export function PreviewControls() {
             onChange={(v) => set({ fontSize: v })}
           />
           <Range
-            label="Weight"
+            icon={Bold}
             value={weight}
             min={100}
             max={900}
@@ -117,7 +121,7 @@ export function PreviewControls() {
             onChange={(v) => set({ weight: v })}
           />
           <Range
-            label="Line height"
+            icon={MoveVertical}
             value={lineHeight}
             min={0.8}
             max={3}
@@ -125,7 +129,7 @@ export function PreviewControls() {
             onChange={(v) => set({ lineHeight: v })}
           />
           <Range
-            label="Letter spacing"
+            icon={MoveHorizontal}
             value={letterSpacing}
             min={-5}
             max={20}

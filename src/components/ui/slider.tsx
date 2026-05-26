@@ -47,8 +47,10 @@ export function Slider({
   );
 }
 
+import { LucideIcon } from "lucide-react";
+
 interface RangeProps {
-  label: string;
+  icon?: LucideIcon;
   value: number;
   min: number;
   max: number;
@@ -58,7 +60,7 @@ interface RangeProps {
 }
 
 export function Range({
-  label,
+  icon: Icon,
   value,
   min,
   max,
@@ -73,9 +75,7 @@ export function Range({
   return (
     <div>
       <div className="mb-1 flex items-center justify-between">
-        <label className="text-sm font-medium text-muted-foreground">
-          {label}
-        </label>
+        {Icon && <Icon className="text-muted-foreground" size={23} />}
         <span className="tabular-nums text-sm font-semibold text-foreground">
           {display}
           {suffix}
