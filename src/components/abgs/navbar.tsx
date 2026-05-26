@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Separator } from "../ui/separator";
 
 const views: { key: ViewMode; icon: LucideIcon; label: string }[] = [
   { key: "grid", icon: LayoutGrid, label: "Grid" },
@@ -44,13 +45,12 @@ export function Toolbar() {
       <div className="glass flex flex-wrap items-center gap-2 rounded-lg border border-border p-4 shadow-soft">
         <div className="flex items-center gap-2">
           <img
-            src="/logo.png"
+            src="/logo-tla.png"
             alt="Abgs logo"
-            className="h-11 w-11 drop-shadow-sm"
+            className="h-11 invert w-11 drop-shadow-sm"
           />
-          <span className="font-semibold tracking-tight">Abgs</span>
         </div>
-        <div className="mx-1 h-6 w-px bg-border" />
+        <Separator orientation="vertical" className="mx-1 h-6" />
 
         <div className="relative min-w-50 flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -58,7 +58,7 @@ export function Toolbar() {
             value={s.search}
             onChange={(e) => s.set({ search: e.target.value })}
             placeholder="Search fonts…  (⌘K for command palette)"
-            className="h-10 w-full rounded-sm border border-transparent bg-secondary/60 pl-9 pr-3 text-sm outline-none transition focus:border-border focus:bg-background"
+            className="h-10 w-full rounded-sm border border-border bg-secondary/60 pl-9 pr-3 text-sm outline-none transition focus:border-primary/50 focus:bg-background"
           />
         </div>
 

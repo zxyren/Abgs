@@ -3,7 +3,7 @@ import Fuse from "fuse.js";
 import { AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { useFontStore } from "@/store/font-store";
-import { Toolbar } from "@/components/abgs/toolbar";
+import { Toolbar } from "@/components/abgs/navbar";
 import { PreviewControls } from "@/components/abgs/preview-controls";
 import { UploadZone } from "@/components/abgs/upload-zone";
 import { FontCard } from "@/components/abgs/font-card";
