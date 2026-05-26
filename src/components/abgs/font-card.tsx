@@ -6,6 +6,7 @@ import {
   GitCompareArrows,
   Info,
   RotateCcw,
+  MoveDiagonal,
 } from "lucide-react";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
@@ -140,7 +141,7 @@ export function FontCard({ font, onOpen }: Props) {
         <TooltipProvider delayDuration={200}>
           <div className="flex shrink-0 items-center gap-0.5">
             <IconBtn label="Details" onClick={() => onOpen(font.id)}>
-              <Info size={15} />
+              <MoveDiagonal size={15} />
             </IconBtn>
             <IconBtn label="Reset settings" onClick={resetSettings}>
               <RotateCcw size={15} />
@@ -151,7 +152,6 @@ export function FontCard({ font, onOpen }: Props) {
 
       {/* ── Editable preview ── */}
       <div className="relative px-4 py-3 min-h-24">
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-linear-to-t from-card to-transparent z-10" />
         <textarea
           ref={textareaRef}
           rows={1}
