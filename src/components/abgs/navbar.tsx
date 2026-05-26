@@ -1,14 +1,5 @@
-import { useFontStore, type ViewMode, type SortKey } from "@/store/font-store";
-import {
-  type LucideIcon,
-  Search,
-  LayoutGrid,
-  List,
-  Rows3,
-  Sun,
-  Moon,
-  Command,
-} from "lucide-react";
+import { useFontStore, type SortKey } from "@/store/font-store";
+import { Search, Sun, Moon, Command } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Tooltip,
@@ -25,12 +16,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Separator } from "../ui/separator";
-
-const views: { key: ViewMode; icon: LucideIcon; label: string }[] = [
-  { key: "grid", icon: LayoutGrid, label: "Grid" },
-  { key: "list", icon: List, label: "List" },
-  { key: "compact", icon: Rows3, label: "Compact" },
-];
 
 const sorts: { key: SortKey; label: string }[] = [
   { key: "recent", label: "Recent" },
@@ -101,24 +86,7 @@ export function Toolbar() {
 
         <TooltipProvider>
           <div className="flex h-10 items-center rounded-sm border border-border bg-background p-1">
-            {views.map((v) => (
-              <Tooltip key={v.key}>
-                <TooltipTrigger asChild>
-                  <button
-                    aria-label={v.label}
-                    onClick={() => s.set({ view: v.key })}
-                    className={`flex h-8 w-8 items-center justify-center rounded-sm cursor-pointer transition ${
-                      s.view === v.key
-                        ? "bg-foreground text-background"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <v.icon size={16} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="top">{v.label}</TooltipContent>
-              </Tooltip>
-            ))}
+            <div className="w-0" />
           </div>
           <Tooltip>
             <TooltipTrigger asChild>

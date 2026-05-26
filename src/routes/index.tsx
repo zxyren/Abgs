@@ -4,7 +4,7 @@ import { AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { useFontStore } from "@/store/font-store";
 import { Toolbar } from "@/components/abgs/navbar";
-import { PreviewControls } from "@/components/abgs/preview-controls";
+// PreviewControls moved into each FontCard
 import { UploadZone } from "@/components/abgs/upload-zone";
 import { FontCard } from "@/components/abgs/font-card";
 import { FontDetail } from "@/components/abgs/font-detail";
@@ -76,12 +76,7 @@ export function Index() {
     return () => observer.disconnect();
   }, [visibleCount, visible.length]);
 
-  const gridClass =
-    s.view === "list"
-      ? "grid-cols-1"
-      : s.view === "compact"
-        ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3";
+  const gridClass = "grid-cols-1";
 
   if (!hydrated) {
     return <div className="min-h-screen bg-background pb-32" />;
@@ -136,7 +131,6 @@ export function Index() {
 
         {s.fonts.length > 0 && (
           <>
-            <PreviewControls />
             <div className="mx-auto max-w-7xl px-4">
               <div className="mb-3 flex items-end justify-between">
                 <h2 className="text-sm text-muted-foreground">
@@ -147,12 +141,7 @@ export function Index() {
               <div className={`grid gap-4 ${gridClass}`}>
                 <AnimatePresence mode="popLayout">
                   {paginatedVisible.map((f) => (
-                    <FontCard
-                      key={f.id}
-                      font={f}
-                      onOpen={setOpenId}
-                      view={s.view}
-                    />
+                    <FontCard key={f.id} font={f} onOpen={setOpenId} />
                   ))}
                 </AnimatePresence>
               </div>

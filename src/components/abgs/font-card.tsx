@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Copy, Download, Trash2, GitCompareArrows } from "lucide-react";
+import { Range } from "@/components/ui/slider";
 import { useFontStore, type FontItem } from "@/store/font-store";
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
@@ -16,12 +17,26 @@ import { Separator } from "../ui/separator";
 interface Props {
   font: FontItem;
   onOpen: (id: string) => void;
-  view: "grid" | "list" | "compact";
 }
 
-export function FontCard({ font, onOpen, view }: Props) {
-  const { previewText, fontSize, lineHeight, letterSpacing, weight, align } =
-    useFontStore();
+export function FontCard({ font, onOpen }: Props) {
+  const {
+    previewText: globalPreviewText,
+    fontSize: globalFontSize,
+    lineHeight: globalLineHeight,
+    letterSpacing: globalLetterSpacing,
+    weight: globalWeight,
+    align,
+  } = useFontStore();
+  const [localPreviewText, setLocalPreviewText] = useState<string>(
+    font.originalName,
+  );
+  const [localFontSize, setLocalFontSize] = useState<number>(globalFontSize);
+  const [localWeight, setLocalWeight] = useState<number>(globalWeight);
+  const [localLineHeight, setLocalLineHeight] =
+    useState<number>(globalLineHeight);
+  const [localLetterSpacing, setLocalLetterSpacing] =
+    useState<number>(globalLetterSpacing);
   const remove = useFontStore((s) => s.remove);
   const download = useFontStore((s) => s.downloadFont);
   const toggleSelected = useFontStore((s) => s.toggleSelected);
@@ -32,9 +47,9 @@ export function FontCard({ font, onOpen, view }: Props) {
     loadFontOnDemand(font.id);
   }, [font.id, loadFontOnDemand]);
 
-  const sample = previewText || font.originalName;
-  const baseSize = view === "compact" ? 22 : view === "list" ? 32 : fontSize;
-  const previewHeight = view === "compact" ? 90 : view === "list" ? 100 : 160;
+  const sample = localPreviewText || font.originalName;
+  const baseSize = localFontSize;
+  const previewHeight = 140;
 
   function copyName() {
     navigator.clipboard.writeText(font.originalName);
@@ -52,10 +67,7 @@ export function FontCard({ font, onOpen, view }: Props) {
       }`}
     >
       {/* Preview area — fixed height, text clipped */}
-      <button
-        onClick={() => onOpen(font.id)}
-        className="block w-full text-left"
-      >
+      <div onClick={() => onOpen(font.id)} className="block w-full text-left">
         <div
           className="relative overflow-hidden px-5 py-5"
           style={{ height: previewHeight }}
@@ -67,9 +79,9 @@ export function FontCard({ font, onOpen, view }: Props) {
             style={{
               fontFamily: `'${font.family}', system-ui`,
               fontSize: baseSize,
-              lineHeight,
-              letterSpacing: `${letterSpacing}px`,
-              fontWeight: weight,
+              lineHeight: localLineHeight,
+              letterSpacing: `${localLetterSpacing}px`,
+              fontWeight: localWeight,
               textAlign: align,
               fontFeatureSettings: "normal",
               fontVariationSettings: "normal",
@@ -78,7 +90,7 @@ export function FontCard({ font, onOpen, view }: Props) {
             {sample}
           </span>
         </div>
-      </button>
+      </div>
 
       {/* Footer */}
       <div className="flex items-center justify-between border-t border-border px-4 py-2.5">
@@ -88,6 +100,48 @@ export function FontCard({ font, onOpen, view }: Props) {
           </div>
           <div className="text-sm text-muted-foreground">
             {font.format.toUpperCase()} · {humanSize(font.size)}
+          </div>
+        </div>
+        <div className="flex-1 ml-4">
+          <div className="mb-2">
+            <input
+              value={localPreviewText}
+              onChange={(e) => setLocalPreviewText(e.target.value)}
+              placeholder="Type to preview"
+              className="w-full rounded-sm border border-border bg-background px-2 py-1 text-sm outline-none"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Range
+              value={localFontSize}
+              min={12}
+              max={200}
+              step={1}
+              suffix="px"
+              onChange={(v) => setLocalFontSize(v)}
+            />
+            <Range
+              value={localWeight}
+              min={100}
+              max={900}
+              step={100}
+              onChange={(v) => setLocalWeight(v)}
+            />
+            <Range
+              value={localLineHeight}
+              min={0.8}
+              max={3}
+              step={0.05}
+              onChange={(v) => setLocalLineHeight(v)}
+            />
+            <Range
+              value={localLetterSpacing}
+              min={-5}
+              max={20}
+              step={0.1}
+              suffix="px"
+              onChange={(v) => setLocalLetterSpacing(v)}
+            />
           </div>
         </div>
 
