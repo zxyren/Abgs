@@ -69,7 +69,7 @@ export const useFontStore = create<State>((set, get) => ({
   hydrated: false,
   uploadProgress: null,
   previewText: "The quick brown fox jumps over the lazy dog",
-  fontSize: 32,
+  fontSize: 80,
   lineHeight: 1.3,
   letterSpacing: 0,
   weight: 400,
@@ -208,7 +208,7 @@ export const useFontStore = create<State>((set, get) => ({
   resetPreview: () =>
     set({
       previewText: "The quick brown fox jumps over the lazy dog",
-      fontSize: 32,
+      fontSize: 80,
       lineHeight: 1.3,
       letterSpacing: 0,
       weight: 400,
