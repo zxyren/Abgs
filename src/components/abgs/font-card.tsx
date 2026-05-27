@@ -94,6 +94,9 @@ export function FontCard({ font, onOpen }: Props) {
     const { fontSize, weight, lineHeight, letterSpacing } = liveRef.current;
     el.style.fontSize = `${fontSize}px`;
     el.style.fontWeight = String(weight);
+    try {
+      el.style.fontVariationSettings = `'wght' ${weight}`;
+    } catch (e) {}
     el.style.lineHeight = String(lineHeight);
     el.style.letterSpacing = `${letterSpacing}px`;
     // auto-resize height
@@ -181,6 +184,7 @@ export function FontCard({ font, onOpen }: Props) {
             lineHeight: committed.lineHeight,
             letterSpacing: `${committed.letterSpacing}px`,
             fontWeight: committed.weight,
+            fontVariationSettings: `'wght' ${committed.weight}`,
             textAlign: align,
           }}
         />
@@ -203,7 +207,7 @@ export function FontCard({ font, onOpen }: Props) {
             value={committed.weight}
             min={100}
             max={900}
-            step={100}
+            step={1}
             onChange={makeLiveHandler("weight")}
             onChangeEnd={makeCommitHandler("weight")}
           />
