@@ -180,11 +180,28 @@ export function Navbar() {
                   );
                   localStorage.setItem("abgs:theme", next);
                 }}
-                className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
+                className="relative h-10 w-10 rounded-sm hover:bg-accent transition-transform hover:scale-105 active:scale-95"
               >
-                {s.theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+                <Sun
+                  size={16}
+                  className={`absolute inset-0 m-auto transition-all duration-500 ${
+                    s.theme === "dark"
+                      ? "rotate-0 scale-100 opacity-100"
+                      : "rotate-90 scale-0 opacity-0"
+                  }`}
+                />
+
+                <Moon
+                  size={16}
+                  className={`absolute inset-0 m-auto transition-all duration-500 ${
+                    s.theme === "dark"
+                      ? "-rotate-90 scale-0 opacity-0"
+                      : "rotate-0 scale-100 opacity-100"
+                  }`}
+                />
               </Button>
             </TooltipTrigger>
+
             <TooltipContent side="top">Toggle theme</TooltipContent>
           </Tooltip>
         </TooltipProvider>
