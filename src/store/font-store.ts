@@ -27,7 +27,6 @@ export interface FontItem {
   metadata?: FontMetadata;
 }
 
-export type ViewMode = "grid" | "list" | "compact";
 export type SortKey = "name" | "recent" | "size";
 
 interface State {
@@ -41,7 +40,6 @@ interface State {
   weight: number;
   align: "left" | "center" | "right";
   theme: "light" | "dark";
-  view: ViewMode;
   search: string;
   sort: SortKey;
   filterFormat: string | null;
