@@ -3,7 +3,7 @@ import {
   clearAllStorage,
   type SortKey,
 } from "@/store/font-store";
-import { Search, Sun, Moon, Trash2, Upload } from "lucide-react";
+import { Search, Sun, Moon, Trash2, Paperclip } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -132,7 +132,7 @@ export function Navbar() {
                 disabled={loading}
                 className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
               >
-                <Upload size={16} />
+                <Paperclip size={16} />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="top">Upload fonts</TooltipContent>
