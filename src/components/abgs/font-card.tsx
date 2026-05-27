@@ -12,21 +12,7 @@ import {
   MoveVertical,
 } from "lucide-react";
 import { useFontStore, type FontItem } from "@/store/font-store";
-
-/** Strip file extension + common font metadata noise from a filename. */
-function cleanFontName(name: string): string {
-  // 1. Remove extension (.ttf, .otf, .woff, .woff2, .eot, .svg)
-  let n = name.replace(/\.(ttf|otf|woff2?|eot|svg)$/i, "");
-  // 2. Remove bracketed/parenthesised segments e.g. "[Version 2.00] 082014" "(Beta)"
-  n = n.replace(/[\[(][^\])]*[\])]/g, "");
-  // 3. Remove common trailing metadata words (case-insensitive)
-  n = n.replace(
-    /[-_\s]+(variable|variablefont|italic|wght|oblique|regular|bold|light|thin|black|medium|semibold|extrabold|extralight|condensed|expanded|narrow|wide|v\d+[\d.]*|\d{4,}[\d-]*)(?=[-_\s]|$)/gi,
-    "",
-  );
-  // 4. Replace remaining separators with spaces and trim
-  return n.replace(/[-_]+/g, " ").trim();
-}
+import { cleanFontName } from "@/lib/clean-font-name";
 import {
   applyPreviewWeight,
   humanSize,
