@@ -1,5 +1,5 @@
 import { LucideIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SliderProps {
   value: number;
@@ -73,6 +73,10 @@ export function Range({
 }: RangeProps) {
   // Own the live value here so both the label and thumb update every drag tick
   const [localValue, setLocalValue] = useState(value);
+
+  useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
 
   function handleChange(v: number) {
     setLocalValue(v);
