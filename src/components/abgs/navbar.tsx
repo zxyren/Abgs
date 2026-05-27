@@ -26,8 +26,8 @@ const sorts: { key: SortKey; label: string }[] = [
 export function Toolbar() {
   const s = useFontStore();
   return (
-    <div className="sticky top-4 z-30 mb-6 w-full px-4">
-      <div className="glass flex flex-wrap items-center gap-2 rounded-lg border border-border p-4 shadow-soft">
+    <div className="sticky top-0 z-30 mb-6 w-full">
+      <div className="glass flex flex-wrap items-center px-4 gap-2 border-b border-foreground/20 p-4 shadow-soft">
         <div className="flex items-center gap-2">
           <img
             src="/logo-tla.png"
@@ -43,7 +43,7 @@ export function Toolbar() {
             value={s.search}
             onChange={(e) => s.set({ search: e.target.value })}
             placeholder="Search fonts…  (⌘K for command palette)"
-            className="h-10 w-full rounded-sm border border-border bg-secondary/60 pl-9 pr-3 text-sm outline-none transition focus:border-primary/50 focus:bg-background"
+            className="h-10 rounded-sm border border-border bg-secondary/60 pl-9 pr-3 text-sm outline-none focus:w-sm focus:border-primary/50 focus:bg-background"
           />
         </div>
 

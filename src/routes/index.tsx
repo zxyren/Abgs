@@ -108,9 +108,9 @@ export function Index() {
         </div>
       )}
 
-      <div className="pt-4 sticky top-0 z-10">
-        <Toolbar />
-      </div>
+      {/* <div className="pt-4 sticky top-0 z-10"> */}
+      <Toolbar />
+      {/* </div> */}
 
       <div className="w-full px-4 pt-8">
         <div className="mb-10 text-center">

@@ -9,6 +9,21 @@ import {
   MoveDiagonal,
 } from "lucide-react";
 import { useFontStore, type FontItem } from "@/store/font-store";
+
+/** Strip file extension + common font metadata noise from a filename. */
+function cleanFontName(name: string): string {
+  // 1. Remove extension (.ttf, .otf, .woff, .woff2, .eot, .svg)
+  let n = name.replace(/\.(ttf|otf|woff2?|eot|svg)$/i, "");
+  // 2. Remove bracketed/parenthesised segments e.g. "[Version 2.00] 082014" "(Beta)"
+  n = n.replace(/[\[(][^\])]*[\])]/g, "");
+  // 3. Remove common trailing metadata words (case-insensitive)
+  n = n.replace(
+    /[-_\s]+(variable|variablefont|italic|wght|oblique|regular|bold|light|thin|black|medium|semibold|extrabold|extralight|condensed|expanded|narrow|wide|v\d+[\d.]*|\d{4,}[\d-]*)(?=[-_\s]|$)/gi,
+    "",
+  );
+  // 4. Replace remaining separators with spaces and trim
+  return n.replace(/[-_]+/g, " ").trim();
+}
 import { humanSize } from "@/lib/font-utils";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
@@ -56,8 +71,9 @@ export function FontCard({ font, onOpen }: Props) {
   // State is only used to trigger a re-render when slider is released
   const [committed, setCommitted] = useState({ ...liveRef.current });
 
-  const previewTextRef = useRef(font.originalName);
-  const [previewText, _setPreviewText] = useState(font.originalName);
+  const defaultPreview = cleanFontName(font.originalName);
+  const previewTextRef = useRef(defaultPreview);
+  const [previewText, _setPreviewText] = useState(defaultPreview);
   const setPreviewText = (v: string) => {
     previewTextRef.current = v;
     _setPreviewText(v);
@@ -113,7 +129,7 @@ export function FontCard({ font, onOpen }: Props) {
     };
     applyStyle();
     setCommitted({ ...liveRef.current });
-    setPreviewText(font.originalName);
+    setPreviewText(defaultPreview);
   }
 
   function copyName() {
@@ -124,7 +140,7 @@ export function FontCard({ font, onOpen }: Props) {
   return (
     <div
       className={`w-full relative overflow-hidden hover:border hover:border-foreground border border-border bg-card transition-all duration-100 hover:shadow-float ${
-        selected ? "ring-2 ring-foreground" : ""
+        selected ? "border border-foreground" : ""
       }`}
     >
       {/* ── Top bar: file name + meta + Detail & Reset buttons ── */}
