@@ -34,6 +34,7 @@ interface State {
   hydrated: boolean;
   uploadProgress: { current: number; total: number } | null;
   previewText: string;
+  globalPreviewActive: boolean;
   fontSize: number;
   lineHeight: number;
   letterSpacing: number;
@@ -55,6 +56,7 @@ interface State {
   toggleSelected: (id: string) => void;
   clearSelected: () => void;
   resetPreview: () => void;
+  setPreview: (text: string) => void;
   set: (patch: Partial<State>) => void;
 }
 
@@ -67,6 +69,7 @@ export const useFontStore = create<State>((set, get) => ({
   hydrated: false,
   uploadProgress: null,
   previewText: "The quick brown fox jumps over the lazy dog",
+  globalPreviewActive: false,
   fontSize: 80,
   lineHeight: 1.3,
   letterSpacing: 0,
@@ -215,12 +218,15 @@ export const useFontStore = create<State>((set, get) => ({
   resetPreview: () =>
     set({
       previewText: "The quick brown fox jumps over the lazy dog",
+      globalPreviewActive: false,
       fontSize: 80,
       lineHeight: 1.3,
       letterSpacing: 0,
       weight: 400,
       align: "left",
     }),
+  setPreview: (text: string) =>
+    set({ previewText: text, globalPreviewActive: text.trim() !== "" }),
 }));
 
 export async function clearAllStorage() {

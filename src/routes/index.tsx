@@ -9,6 +9,7 @@ import { isFontFile } from "@/lib/font-utils";
 import { FontCard } from "@/components/abgs/font-card";
 import { FontDetail } from "@/components/abgs/font-detail";
 import { CompareBar, CompareModal } from "@/components/abgs/compare-bar";
+import { GlobalPreview } from "@/components/abgs/global-preview";
 
 export function Index() {
   const s = useFontStore();
@@ -199,6 +200,7 @@ export function Index() {
         ) : (
           <>
             <div className="w-full px-4">
+              <GlobalPreview />
               <div className="mb-3 flex items-end justify-between">
                 <h2 className="text-sm text-muted-foreground">
                   {visible.length} of {s.fonts.length} font

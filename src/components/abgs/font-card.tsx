@@ -72,6 +72,10 @@ export function FontCard({ font, onOpen }: Props) {
     _setPreviewText(v);
   };
 
+  const globalPreview = useFontStore((s) => s.previewText);
+  const globalActive = useFontStore((s) => s.globalPreviewActive);
+  const displayedPreviewText =
+    globalActive && globalPreview.trim() !== "" ? globalPreview : previewText;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const applyStyle = useCallback(() => {
@@ -92,7 +96,7 @@ export function FontCard({ font, onOpen }: Props) {
     if (!el) return;
     el.style.height = "auto";
     el.style.height = `${el.scrollHeight}px`;
-  }, [previewText]);
+  }, [displayedPreviewText]);
 
   function makeLiveHandler(key: keyof typeof liveRef.current) {
     return (v: number) => {
@@ -156,7 +160,7 @@ export function FontCard({ font, onOpen }: Props) {
         <textarea
           ref={textareaRef}
           rows={1}
-          value={previewText}
+          value={displayedPreviewText}
           onChange={(e) => setPreviewText(e.target.value)}
           placeholder="Type to preview…"
           className="block w-full resize-none overflow-hidden bg-transparent outline-none leading-tight placeholder:opacity-30 cursor-text"
