@@ -32,6 +32,35 @@ export interface FontMetadata {
   licenseURL?: string;
   createdAt?: number;
   modifiedAt?: number;
+  isVariable?: boolean;
+  weightClass?: number;
+}
+
+type PreviewWeightStyle = {
+  fontWeight: number;
+  fontVariationSettings?: string;
+  fontSynthesis?: "none";
+};
+
+export function previewWeightStyles(
+  metadata: FontMetadata | undefined,
+  weight: number,
+): PreviewWeightStyle {
+  if (metadata?.isVariable) {
+    return { fontWeight: weight, fontVariationSettings: `'wght' ${weight}` };
+  }
+  return { fontWeight: metadata?.weightClass ?? weight, fontSynthesis: "none" };
+}
+
+export function applyPreviewWeight(
+  el: HTMLElement,
+  metadata: FontMetadata | undefined,
+  weight: number,
+) {
+  const s = previewWeightStyles(metadata, weight);
+  el.style.fontWeight = String(s.fontWeight);
+  el.style.fontVariationSettings = s.fontVariationSettings ?? "";
+  el.style.fontSynthesis = s.fontSynthesis ?? "";
 }
 
 const MAC_EPOCH_MS = Date.UTC(1904, 0, 1, 0, 0, 0, 0);
@@ -66,6 +95,8 @@ export function parseFontMetadata(data: ArrayBuffer): FontMetadata {
   const tableCount = view.getUint16(4);
   let nameOffset = -1;
   let headOffset = -1;
+  let os2Offset = -1;
+  let hasFvar = false;
 
   for (let i = 0; i < tableCount; i += 1) {
     const recordOffset = 12 + i * 16;
@@ -83,9 +114,19 @@ export function parseFontMetadata(data: ArrayBuffer): FontMetadata {
     if (tag === "head") {
       headOffset = offset;
     }
+    if (tag === "OS/2") {
+      os2Offset = offset;
+    }
+    if (tag === "fvar") {
+      hasFvar = true;
+    }
   }
 
-  const metadata: FontMetadata = {};
+  const metadata: FontMetadata = { isVariable: hasFvar };
+
+  if (os2Offset >= 0 && os2Offset + 6 <= data.byteLength) {
+    metadata.weightClass = view.getUint16(os2Offset + 4);
+  }
 
   if (nameOffset >= 0 && nameOffset + 6 <= data.byteLength) {
     const count = view.getUint16(nameOffset + 2);

@@ -27,7 +27,11 @@ function cleanFontName(name: string): string {
   // 4. Replace remaining separators with spaces and trim
   return n.replace(/[-_]+/g, " ").trim();
 }
-import { humanSize } from "@/lib/font-utils";
+import {
+  applyPreviewWeight,
+  humanSize,
+  previewWeightStyles,
+} from "@/lib/font-utils";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
@@ -82,30 +86,19 @@ export function FontCard({ font, onOpen }: Props) {
     _setPreviewText(v);
   };
 
-  // Refs for DOM nodes we mutate directly
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const previewStyle = useRef<CSSStyleDeclaration | null>(null);
 
-  useEffect(() => {
-    if (textareaRef.current) previewStyle.current = textareaRef.current.style;
-  }, []);
-
-  // Apply style directly to DOM — zero React overhead
   const applyStyle = useCallback(() => {
     const el = textareaRef.current;
     if (!el) return;
     const { fontSize, weight, lineHeight, letterSpacing } = liveRef.current;
     el.style.fontSize = `${fontSize}px`;
-    el.style.fontWeight = String(weight);
-    try {
-      el.style.fontVariationSettings = `'wght' ${weight}`;
-    } catch (e) {}
+    applyPreviewWeight(el, font.metadata, weight);
     el.style.lineHeight = String(lineHeight);
     el.style.letterSpacing = `${letterSpacing}px`;
-    // auto-resize height
     el.style.height = "auto";
     el.style.height = `${el.scrollHeight}px`;
-  }, []);
+  }, [font.metadata]);
 
   // Auto-resize on text change
   useEffect(() => {
@@ -186,9 +179,8 @@ export function FontCard({ font, onOpen }: Props) {
             fontSize: committed.fontSize,
             lineHeight: committed.lineHeight,
             letterSpacing: `${committed.letterSpacing}px`,
-            fontWeight: committed.weight,
-            fontVariationSettings: `'wght' ${committed.weight}`,
             textAlign: align,
+            ...previewWeightStyles(font.metadata, committed.weight),
           }}
         />
       </div>

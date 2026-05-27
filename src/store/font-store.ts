@@ -158,6 +158,15 @@ export const useFontStore = create<State>((set, get) => ({
     try {
       const data = (await idbGet(DATA_PREFIX + id)) as ArrayBuffer | undefined;
       if (data) {
+        const m = font.metadata;
+        if (m?.isVariable === undefined || m?.weightClass === undefined) {
+          const patch = parseFontMetadata(data);
+          set((s) => ({
+            fonts: s.fonts.map((f) =>
+              f.id === id ? { ...f, metadata: { ...f.metadata, ...patch } } : f,
+            ),
+          }));
+        }
         await loadFont(font.family, data);
       }
     } catch (e) {
