@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { isFontFile } from "@/lib/font-utils";
 import { FontCard } from "@/components/abgs/font-card";
 import { FontDetail } from "@/components/abgs/font-detail";
-import { CommandPalette } from "@/components/abgs/command-palette";
 import { CompareBar, CompareModal } from "@/components/abgs/compare-bar";
 
 export function Index() {
@@ -157,7 +156,6 @@ export function Index() {
       </AnimatePresence>
 
       <Toaster richColors position="top-center" />
-      <CommandPalette />
       <FontDetail id={openId} onClose={() => setOpenId(null)} />
       <CompareBar onOpen={() => setCompareOpen(true)} />
       <CompareModal open={compareOpen} onClose={() => setCompareOpen(false)} />
@@ -181,9 +179,7 @@ export function Index() {
         </div>
       )}
 
-      {/* <div className="pt-4 sticky top-0 z-10"> */}
       <Navbar />
-      {/* </div> */}
 
       <div className="w-full px-4 pt-8">
         {s.fonts.length === 0 ? (

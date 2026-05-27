@@ -1,7 +1,11 @@
-import { useFontStore, type SortKey } from "@/store/font-store";
-import { Search, Sun, Moon, Command, Upload } from "lucide-react";
+import {
+  useFontStore,
+  clearAllStorage,
+  type SortKey,
+} from "@/store/font-store";
+import { Search, Sun, Moon, Trash2, Upload } from "lucide-react";
 import { Button } from "../ui/button";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { isFontFile } from "@/lib/font-utils";
 import {
@@ -30,6 +34,13 @@ export function Navbar() {
   const s = useFontStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
+
+  useEffect(() => {
+    if (!confirmClear) return;
+    const timeout = window.setTimeout(() => setConfirmClear(false), 3000);
+    return () => window.clearTimeout(timeout);
+  }, [confirmClear]);
 
   const handleFilesSelected = async (files: FileList | null) => {
     if (!files) return;
@@ -131,13 +142,29 @@ export function Navbar() {
               <Button
                 size="icon"
                 variant="outline"
-                onClick={() => s.set({ paletteOpen: true })}
-                className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
+                onClick={async () => {
+                  if (!confirmClear) {
+                    setConfirmClear(true);
+                    toast.warning("Click again to confirm removing all fonts");
+                    return;
+                  }
+                  await clearAllStorage();
+                  location.reload();
+                }}
+                className={`flex h-10 w-10 items-center rounded-sm hover:bg-accent ${
+                  confirmClear
+                    ? "border-red-400 text-red-400 hover:bg-red-500/10"
+                    : ""
+                }`}
               >
-                <Command size={16} />
+                <Trash2 size={16} />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="top">Command palette</TooltipContent>
+            <TooltipContent side="top">
+              {confirmClear
+                ? "Click again to confirm clearing all fonts"
+                : "Clear all fonts"}
+            </TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
