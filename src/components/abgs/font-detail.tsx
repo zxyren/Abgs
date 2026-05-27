@@ -144,8 +144,7 @@ export function FontDetail({
                   {font.originalName}
                 </h2>
                 <p className="text-xs text-muted-foreground">
-                  {font.format.toUpperCase()} · {humanSize(font.size)} · Added{" "}
-                  {new Date(font.addedAt).toLocaleString()}
+                  {font.format.toUpperCase()} · {humanSize(font.size)}
                 </p>
               </div>
               <div className="flex items-center gap-5">
@@ -239,14 +238,14 @@ export function FontDetail({
               )}
               {tab === "glyphs" && (
                 <div
-                  className="grid grid-cols-8 gap-2 sm:grid-cols-12 md:grid-cols-16"
+                  className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16"
                   style={{ fontFamily: fontFamily }}
                 >
                   {GLYPHS.map((glyph, i) => (
                     <button
                       key={i}
                       onClick={() => copyText(glyph, `Copied ${glyph}`)}
-                      className="flex aspect-square cursor-pointer items-center justify-center rounded-lg border border-border bg-background text-2xl transition hover:border-foreground/40 hover:bg-accent"
+                      className="flex aspect-square cursor-pointer items-center justify-center border border-foreground/20 bg-background text-2xl transition hover:border-foreground/40 hover:bg-accent"
                     >
                       {glyph}
                     </button>
