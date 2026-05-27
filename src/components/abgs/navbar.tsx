@@ -23,7 +23,7 @@ const sorts: { key: SortKey; label: string }[] = [
   { key: "size", label: "Size" },
 ];
 
-export function Toolbar() {
+export function Navbar() {
   const s = useFontStore();
   return (
     <div className="sticky top-0 z-30 mb-6 w-full">

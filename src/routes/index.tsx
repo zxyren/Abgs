@@ -3,7 +3,7 @@ import Fuse from "fuse.js";
 import { AnimatePresence } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { useFontStore } from "@/store/font-store";
-import { Toolbar } from "@/components/abgs/navbar";
+import { Navbar } from "@/components/abgs/navbar";
 import { UploadZone } from "@/components/abgs/upload-zone";
 import { FontCard } from "@/components/abgs/font-card";
 import { FontDetail } from "@/components/abgs/font-detail";
@@ -109,7 +109,7 @@ export function Index() {
       )}
 
       {/* <div className="pt-4 sticky top-0 z-10"> */}
-      <Toolbar />
+      <Navbar />
       {/* </div> */}
 
       <div className="w-full px-4 pt-8">
