@@ -156,7 +156,6 @@ export function FontDetail({
                           size="icon"
                           variant="outline"
                           onClick={() => copyText(font.originalName)}
-                          aria-label="Copy name"
                         >
                           <Copy size={16} />
                         </Button>
@@ -170,7 +169,6 @@ export function FontDetail({
                           size="icon"
                           variant="outline"
                           onClick={() => download(font.id)}
-                          aria-label="Download"
                         >
                           <Download size={16} />
                         </Button>
@@ -184,7 +182,6 @@ export function FontDetail({
                           size="icon"
                           variant="destructive"
                           onClick={onClose}
-                          aria-label="Close"
                         >
                           <X size={16} />
                         </Button>

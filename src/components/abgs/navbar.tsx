@@ -1,6 +1,9 @@
 import { useFontStore, type SortKey } from "@/store/font-store";
-import { Search, Sun, Moon, Command } from "lucide-react";
+import { Search, Sun, Moon, Command, Upload } from "lucide-react";
 import { Button } from "../ui/button";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { isFontFile } from "@/lib/font-utils";
 import {
   Tooltip,
   TooltipContent,
@@ -25,6 +28,20 @@ const sorts: { key: SortKey; label: string }[] = [
 
 export function Navbar() {
   const s = useFontStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleFilesSelected = async (files: FileList | null) => {
+    if (!files) return;
+    const fontFiles = Array.from(files).filter((f) => isFontFile(f.name));
+    if (!fontFiles.length) return toast.error("No supported font files found");
+    setLoading(true);
+    await s.addFiles(fontFiles);
+    setLoading(false);
+    toast.success(
+      `Loaded ${fontFiles.length} font${fontFiles.length > 1 ? "s" : ""}`,
+    );
+  };
   return (
     <div className="sticky top-0 z-30 mb-6 w-full">
       <div className="glass flex flex-wrap items-center px-4 gap-2 border-b border-foreground/20 p-4 shadow-soft">
@@ -46,6 +63,15 @@ export function Navbar() {
             className="h-10 rounded-sm border border-border bg-secondary/60 pl-9 pr-3 text-sm outline-none focus:w-sm focus:border-primary/50 focus:bg-background"
           />
         </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept=".ttf,.otf,.woff,.woff2"
+          onChange={(e) => handleFilesSelected(e.target.files)}
+          className="hidden"
+        />
 
         <Select
           value={s.sort}
@@ -91,6 +117,20 @@ export function Navbar() {
               <Button
                 size="icon"
                 variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={loading}
+                className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
+              >
+                <Upload size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">Upload fonts</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="outline"
                 onClick={() => s.set({ paletteOpen: true })}
                 className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
               >
@@ -114,7 +154,6 @@ export function Navbar() {
                   localStorage.setItem("abgs:theme", next);
                 }}
                 className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
-                title="Toggle theme"
               >
                 {s.theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
               </Button>

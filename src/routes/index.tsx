@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { useFontStore } from "@/store/font-store";
 import { Navbar } from "@/components/abgs/navbar";
-import { UploadZone } from "@/components/abgs/upload-zone";
+import { toast } from "sonner";
+import { isFontFile } from "@/lib/font-utils";
 import { FontCard } from "@/components/abgs/font-card";
 import { FontDetail } from "@/components/abgs/font-detail";
 import { CommandPalette } from "@/components/abgs/command-palette";
@@ -16,6 +17,7 @@ export function Index() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [compareOpen, setCompareOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(40);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     s.hydrate();
@@ -75,6 +77,53 @@ export function Index() {
     return () => observer.disconnect();
   }, [visibleCount, visible.length]);
 
+  // Global drag and drop handler
+  useEffect(() => {
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.target === document || e.target === window) {
+        setIsDragging(false);
+      }
+    };
+
+    const handleDrop = async (e: DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragging(false);
+
+      const files = e.dataTransfer?.files;
+      if (!files) return;
+
+      const fontFiles = Array.from(files).filter((f) => isFontFile(f.name));
+      if (!fontFiles.length) {
+        toast.error("No supported font files found");
+        return;
+      }
+
+      await s.addFiles(fontFiles);
+      toast.success(
+        `Loaded ${fontFiles.length} font${fontFiles.length > 1 ? "s" : ""}`,
+      );
+    };
+
+    window.addEventListener("dragover", handleDragOver);
+    window.addEventListener("dragleave", handleDragLeave);
+    window.addEventListener("drop", handleDrop);
+
+    return () => {
+      window.removeEventListener("dragover", handleDragOver);
+      window.removeEventListener("dragleave", handleDragLeave);
+      window.removeEventListener("drop", handleDrop);
+    };
+  }, [s]);
+
   const gridClass = "grid-cols-1";
 
   if (!hydrated) {
@@ -83,6 +132,30 @@ export function Index() {
 
   return (
     <div className="min-h-screen bg-background pb-32">
+      <AnimatePresence>
+        {isDragging && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm flex items-center justify-center pointer-events-none"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="text-center text-white"
+            >
+              <p className="text-xl font-semibold">Drop your fonts here</p>
+              <p className="text-sm text-white/80 mt-2">
+                Supported formats: TTF, OTF, WOFF, WOFF2
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Toaster richColors position="top-center" />
       <CommandPalette />
       <FontDetail id={openId} onClose={() => setOpenId(null)} />
@@ -113,22 +186,21 @@ export function Index() {
       {/* </div> */}
 
       <div className="w-full px-4 pt-8">
-        <div className="mb-10 text-center">
-          <p className="mb-2 text-sm text-muted-foreground">
-            Typography preview studio
-          </p>
-          <h1 className="text-balance text-5xl font-semibold tracking-tight md:text-6xl">
-            Your fonts, beautifully organized.
-          </h1>
-          <p className="mx-auto mt-4 max-w-xl text-balance text-muted-foreground">
-            Drop a folder. Preview thousands. Compare side-by-side. Abgs runs
-            entirely in your browser.
-          </p>
-        </div>
-
-        <UploadZone />
-
-        {s.fonts.length > 0 && (
+        {s.fonts.length === 0 ? (
+          <div className="flex items-center justify-center max-h-screen">
+            <div className="text-center">
+              <h1 className="text-balance text-5xl font-semibold tracking-tight md:text-6xl">
+                Upload fonts to preview
+              </h1>
+              <p className="mx-auto mt-4 max-w-2xl text-balance text-xl text-muted-foreground">
+                Click the upload button in the{" "}
+                <span className="text-foreground">navbar</span> or{" "}
+                <span className="text-foreground">drag and drop</span> files
+                here to import your fonts and start previewing them.
+              </p>
+            </div>
+          </div>
+        ) : (
           <>
             <div className="w-full px-4">
               <div className="mb-3 flex items-end justify-between">
