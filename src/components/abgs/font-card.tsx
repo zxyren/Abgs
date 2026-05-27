@@ -4,9 +4,12 @@ import {
   Download,
   Trash2,
   GitCompareArrows,
-  Info,
   RotateCcw,
-  MoveDiagonal,
+  ALargeSmall,
+  Bold,
+  MoveHorizontal,
+  Maximize2,
+  MoveVertical,
 } from "lucide-react";
 import { useFontStore, type FontItem } from "@/store/font-store";
 
@@ -160,7 +163,7 @@ export function FontCard({ font, onOpen }: Props) {
         <TooltipProvider delayDuration={200}>
           <div className="flex shrink-0 items-center gap-0.5">
             <IconBtn label="Details" onClick={() => onOpen(font.id)}>
-              <MoveDiagonal size={15} />
+              <Maximize2 size={15} />
             </IconBtn>
             <IconBtn label="Reset settings" onClick={resetSettings}>
               <RotateCcw size={15} />
@@ -199,6 +202,7 @@ export function FontCard({ font, onOpen }: Props) {
             min={12}
             max={200}
             step={1}
+            icon={ALargeSmall}
             suffix="px"
             onChange={makeLiveHandler("fontSize")}
             onChangeEnd={makeCommitHandler("fontSize")}
@@ -208,6 +212,7 @@ export function FontCard({ font, onOpen }: Props) {
             min={100}
             max={900}
             step={1}
+            icon={Bold}
             onChange={makeLiveHandler("weight")}
             onChangeEnd={makeCommitHandler("weight")}
           />
@@ -216,6 +221,7 @@ export function FontCard({ font, onOpen }: Props) {
             min={0.8}
             max={3}
             step={0.05}
+            icon={MoveVertical}
             onChange={makeLiveHandler("lineHeight")}
             onChangeEnd={makeCommitHandler("lineHeight")}
           />
@@ -224,6 +230,7 @@ export function FontCard({ font, onOpen }: Props) {
             min={-5}
             max={20}
             step={0.1}
+            icon={MoveHorizontal}
             suffix="px"
             onChange={makeLiveHandler("letterSpacing")}
             onChangeEnd={makeCommitHandler("letterSpacing")}
