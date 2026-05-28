@@ -108,9 +108,7 @@ export function Index() {
       }
 
       await s.addFiles(fontFiles);
-      toast.success(
-        `Loaded ${fontFiles.length} font${fontFiles.length > 1 ? "s" : ""}`,
-      );
+      toast.success(`Loaded ${fontFiles.length} font${fontFiles.length > 1 ? "s" : ""}`);
     };
 
     window.addEventListener("dragover", handleDragOver);
@@ -127,11 +125,11 @@ export function Index() {
   const gridClass = "grid-cols-1";
 
   if (!hydrated) {
-    return <div className="min-h-screen bg-background pb-32" />;
+    return <div className="bg-background min-h-screen pb-32" />;
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="bg-background min-h-screen pb-32">
       <AnimatePresence>
         {isDragging && (
           <motion.div
@@ -139,7 +137,7 @@ export function Index() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm flex items-center justify-center pointer-events-none"
+            className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center bg-black/50 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -148,9 +146,7 @@ export function Index() {
               className="text-center text-white"
             >
               <p className="text-xl font-semibold">Drop your fonts here</p>
-              <p className="text-sm text-white/80 mt-2">
-                Supported formats: TTF, OTF, WOFF, WOFF2
-              </p>
+              <p className="mt-2 text-sm text-white/80">Supported formats: TTF, OTF, WOFF, WOFF2</p>
             </motion.div>
           </motion.div>
         )}
@@ -162,16 +158,16 @@ export function Index() {
       <CompareModal open={compareOpen} onClose={() => setCompareOpen(false)} />
 
       {s.uploadProgress && (
-        <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-border bg-card p-4 shadow-float animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="flex items-center justify-between gap-8 mb-2">
+        <div className="border-border bg-card shadow-float animate-in fade-in slide-in-from-bottom-4 fixed right-6 bottom-6 z-50 max-w-sm rounded-2xl border p-4 duration-300">
+          <div className="mb-2 flex items-center justify-between gap-8">
             <span className="text-sm font-semibold">Importing fonts...</span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-muted-foreground text-xs">
               {s.uploadProgress.current} of {s.uploadProgress.total}
             </span>
           </div>
-          <div className="h-2 w-64 overflow-hidden rounded-full bg-accent">
+          <div className="bg-accent h-2 w-64 overflow-hidden rounded-full">
             <div
-              className="h-full bg-primary transition-all duration-300 ease-out"
+              className="bg-primary h-full transition-all duration-300 ease-out"
               style={{
                 width: `${(s.uploadProgress.current / s.uploadProgress.total) * 100}%`,
               }}
@@ -184,16 +180,15 @@ export function Index() {
 
       <div className="w-full px-4 pt-8">
         {s.fonts.length === 0 ? (
-          <div className="flex items-center justify-center max-h-screen">
+          <div className="flex max-h-screen items-center justify-center">
             <div className="text-center">
-              <h1 className="text-balance text-5xl font-semibold tracking-tight md:text-6xl">
+              <h1 className="text-5xl font-semibold tracking-tight text-balance md:text-6xl">
                 Upload fonts to preview
               </h1>
-              <p className="mx-auto mt-4 max-w-2xl text-balance text-xl text-muted-foreground">
-                Click the upload button in the{" "}
-                <span className="text-foreground">navbar</span> or{" "}
-                <span className="text-foreground">drag and drop</span> files
-                here to import your fonts and start previewing them.
+              <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-xl text-balance">
+                Click the upload button in the <span className="text-indigo-500">navbar</span> or{" "}
+                <span className="text-indigo-500">drag and drop</span> files here to import your
+                fonts and start previewing them.
               </p>
             </div>
           </div>
@@ -202,7 +197,7 @@ export function Index() {
             <div className="w-full px-4">
               <GlobalPreview />
               <div className="mb-3 flex items-end justify-between">
-                <h2 className="text-sm text-muted-foreground">
+                <h2 className="text-muted-foreground text-sm">
                   {visible.length} of {s.fonts.length} font
                   {s.fonts.length === 1 ? "" : "s"}
                 </h2>
@@ -216,16 +211,13 @@ export function Index() {
               </div>
 
               {visible.length > visibleCount && (
-                <div
-                  id="sentinel"
-                  className="h-10 w-full flex items-center justify-center my-8"
-                >
-                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                <div id="sentinel" className="my-8 flex h-10 w-full items-center justify-center">
+                  <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
                 </div>
               )}
 
               {visible.length === 0 && (
-                <div className="mt-12 text-center text-sm text-muted-foreground">
+                <div className="text-muted-foreground mt-12 text-center text-sm">
                   No fonts match your filters.
                 </div>
               )}
