@@ -59,12 +59,12 @@ function DropdownMenuContent({
     <DropdownMenuContentPrimitive
       sideOffset={sideOffset}
       className={cn(
-        "bg-popover text-popover-foreground z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-[8rem] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md outline-none",
+        "bg-popover text-popover-foreground z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border p-1 shadow-md outline-none",
         className,
       )}
       {...props}
     >
-      <DropdownMenuHighlightPrimitive className="absolute inset-0 bg-accent z-0 rounded-sm">
+      <DropdownMenuHighlightPrimitive className="bg-accent absolute inset-0 z-0 rounded-sm">
         {children}
       </DropdownMenuHighlightPrimitive>
     </DropdownMenuContentPrimitive>
@@ -91,11 +91,7 @@ function DropdownMenuItem({
 }: DropdownMenuItemProps) {
   return (
     <DropdownMenuHighlightItemPrimitive
-      activeClassName={
-        variant === "destructive"
-          ? "bg-destructive/10 dark:bg-destructive/20"
-          : ""
-      }
+      activeClassName={variant === "destructive" ? "bg-destructive/10 dark:bg-destructive/20" : ""}
       disabled={disabled}
     >
       <DropdownMenuItemPrimitive
@@ -103,7 +99,7 @@ function DropdownMenuItem({
         data-inset={inset}
         data-variant={variant}
         className={cn(
-          "focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:!text-destructive [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[inset]:pl-8 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "focus:text-accent-foreground data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:text-destructive data-[variant=destructive]:*:[svg]:text-destructive! [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-inset:pl-8 data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
           className,
         )}
         {...props}
@@ -185,18 +181,11 @@ type DropdownMenuLabelProps = DropdownMenuLabelPrimitiveProps & {
   inset?: boolean;
 };
 
-function DropdownMenuLabel({
-  className,
-  inset,
-  ...props
-}: DropdownMenuLabelProps) {
+function DropdownMenuLabel({ className, inset, ...props }: DropdownMenuLabelProps) {
   return (
     <DropdownMenuLabelPrimitive
       data-inset={inset}
-      className={cn(
-        "px-2 py-1.5 text-sm font-medium data-[inset]:pl-8",
-        className,
-      )}
+      className={cn("px-2 py-1.5 text-sm font-medium data-inset:pl-8", className)}
       {...props}
     />
   );
@@ -204,10 +193,7 @@ function DropdownMenuLabel({
 
 type DropdownMenuSeparatorProps = DropdownMenuSeparatorPrimitiveProps;
 
-function DropdownMenuSeparator({
-  className,
-  ...props
-}: DropdownMenuSeparatorProps) {
+function DropdownMenuSeparator({ className, ...props }: DropdownMenuSeparatorProps) {
   return (
     <DropdownMenuSeparatorPrimitive
       className={cn("bg-border -mx-1 my-1 h-px", className)}
@@ -218,16 +204,10 @@ function DropdownMenuSeparator({
 
 type DropdownMenuShortcutProps = DropdownMenuShortcutPrimitiveProps;
 
-function DropdownMenuShortcut({
-  className,
-  ...props
-}: DropdownMenuShortcutProps) {
+function DropdownMenuShortcut({ className, ...props }: DropdownMenuShortcutProps) {
   return (
     <DropdownMenuShortcutPrimitive
-      className={cn(
-        "text-muted-foreground ml-auto text-xs tracking-widest",
-        className,
-      )}
+      className={cn("text-muted-foreground ml-auto text-xs tracking-widest", className)}
       {...props}
     />
   );
@@ -257,7 +237,7 @@ function DropdownMenuSubTrigger({
         data-inset={inset}
         className={cn(
           "focus:text-accent-foreground data-[state=open]:text-accent-foreground flex cursor-default items-center rounded-sm px-2 py-1.5 text-sm outline-hidden select-none data-inset:pl-8",
-          "data-[state=open]:[&_[data-slot=chevron]]:rotate-90 [&_[data-slot=chevron]]:transition-transform [&_[data-slot=chevron]]:duration-300 [&_[data-slot=chevron]]:ease-in-out",
+          "**:data-[slot=chevron]:transition-transform **:data-[slot=chevron]:duration-300 **:data-[slot=chevron]:ease-in-out data-[state=open]:**:data-[slot=chevron]:rotate-90",
           className,
         )}
         {...props}
@@ -271,10 +251,7 @@ function DropdownMenuSubTrigger({
 
 type DropdownMenuSubContentProps = DropdownMenuSubContentPrimitiveProps;
 
-function DropdownMenuSubContent({
-  className,
-  ...props
-}: DropdownMenuSubContentProps) {
+function DropdownMenuSubContent({ className, ...props }: DropdownMenuSubContentProps) {
   return (
     <DropdownMenuSubContentPrimitive
       className={cn(
