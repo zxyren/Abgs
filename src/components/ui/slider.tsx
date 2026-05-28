@@ -24,9 +24,9 @@ export function Slider({
 
   return (
     <div className={`relative flex h-9 w-full items-center ${className}`}>
-      <div className="relative h-0.5 w-full rounded-full bg-border/40">
+      <div className="bg-border/40 relative h-0.5 w-full rounded-full">
         <div
-          className="absolute left-0 top-0 h-full rounded-full bg-foreground"
+          className="bg-foreground absolute top-0 left-0 h-full rounded-full"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -39,11 +39,11 @@ export function Slider({
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
         onPointerUp={onChangeEnd}
-        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+        className="absolute inset-0 h-full w-full cursor-grab opacity-0"
       />
 
       <div
-        className="pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-popover border border-foreground shadow-sm"
+        className="bg-popover border-foreground pointer-events-none absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 shadow-sm"
         style={{ left: `${percent}%` }}
       />
     </div>
@@ -91,7 +91,7 @@ export function Range({
     <div>
       <div className="mb-1 flex items-center justify-between">
         {Icon && <Icon className="text-muted-foreground" size={23} />}
-        <span className="tabular-nums text-sm font-semibold text-foreground">
+        <span className="text-foreground text-sm font-semibold tabular-nums">
           {display}
           {suffix}
         </span>
