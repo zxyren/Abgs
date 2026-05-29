@@ -141,7 +141,7 @@ export function Navbar() {
             <TooltipTrigger asChild>
               <Button
                 size="icon"
-                variant="outline"
+                variant="destructive"
                 onClick={async () => {
                   if (!confirmClear) {
                     setConfirmClear(true);
@@ -151,7 +151,7 @@ export function Navbar() {
                   await clearAllStorage();
                   location.reload();
                 }}
-                className={`flex h-10 w-10 items-center rounded-sm hover:bg-accent ${
+                className={`flex h-10 w-10 items-center rounded-sm ${
                   confirmClear
                     ? "border-red-400 text-red-400 hover:bg-red-500/10"
                     : ""
