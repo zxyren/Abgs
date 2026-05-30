@@ -1,19 +1,10 @@
-import {
-  useFontStore,
-  clearAllStorage,
-  type SortKey,
-} from "@/store/font-store";
+import { useFontStore, clearAllStorage, type SortKey } from "@/store/font-store";
 import { Search, Sun, Moon, Trash2, Paperclip } from "lucide-react";
 import { Button } from "../ui/button";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { isFontFile } from "@/lib/font-utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import {
   Select,
   SelectContent,
@@ -49,29 +40,27 @@ export function Navbar() {
     setLoading(true);
     await s.addFiles(fontFiles);
     setLoading(false);
-    toast.success(
-      `Loaded ${fontFiles.length} font${fontFiles.length > 1 ? "s" : ""}`,
-    );
+    toast.success(`Loaded ${fontFiles.length} font${fontFiles.length > 1 ? "s" : ""}`);
   };
   return (
     <div className="sticky top-0 z-30 mb-6 w-full">
-      <div className="glass flex flex-wrap items-center px-4 gap-2 border-b border-foreground/20 p-4 shadow-soft">
+      <div className="glass border-foreground/20 shadow-soft flex flex-wrap items-center gap-2 border-b p-4 px-4">
         <div className="flex items-center gap-2">
           <img
-            src="/logo-tla.png"
-            alt="Abgs logo"
-            className="h-11 invert w-11 drop-shadow-sm"
+            src="/logo_dark.png"
+            alt="Fontest logo"
+            className="h-11 w-11 drop-shadow-sm dark:invert"
           />
         </div>
         <Separator orientation="vertical" className="mx-1 h-6" />
 
         <div className="relative min-w-50 flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
           <input
             value={s.search}
             onChange={(e) => s.set({ search: e.target.value })}
             placeholder="Search fonts…  (⌘K for command palette)"
-            className="h-10 rounded-sm border border-border bg-secondary/60 pl-9 pr-3 text-sm outline-none focus:w-sm focus:border-primary/50 focus:bg-background"
+            className="border-border bg-secondary/60 focus:border-primary/50 focus:bg-background h-10 rounded-sm border pr-3 pl-9 text-sm outline-none focus:w-sm"
           />
         </div>
 
@@ -84,10 +73,7 @@ export function Navbar() {
           className="hidden"
         />
 
-        <Select
-          value={s.sort}
-          onValueChange={(v) => s.set({ sort: v as SortKey })}
-        >
+        <Select value={s.sort} onValueChange={(v) => s.set({ sort: v as SortKey })}>
           <SelectTrigger>
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
@@ -130,7 +116,7 @@ export function Navbar() {
                 variant="outline"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={loading}
-                className="flex h-10 w-10 items-center rounded-sm hover:bg-accent"
+                className="hover:bg-accent flex h-10 w-10 items-center rounded-sm"
               >
                 <Paperclip size={16} />
               </Button>
@@ -152,18 +138,14 @@ export function Navbar() {
                   location.reload();
                 }}
                 className={`flex h-10 w-10 items-center rounded-sm ${
-                  confirmClear
-                    ? "border-red-400 text-red-400 hover:bg-red-500/10"
-                    : ""
+                  confirmClear ? "border-red-400 text-red-400 hover:bg-red-500/10" : ""
                 }`}
               >
                 <Trash2 size={16} />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="top">
-              {confirmClear
-                ? "Click again to confirm clearing all fonts"
-                : "Clear all fonts"}
+              {confirmClear ? "Click again to confirm clearing all fonts" : "Clear all fonts"}
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -174,20 +156,17 @@ export function Navbar() {
                 onClick={() => {
                   const next = s.theme === "dark" ? "light" : "dark";
                   s.set({ theme: next });
-                  document.documentElement.classList.toggle(
-                    "dark",
-                    next === "dark",
-                  );
-                  localStorage.setItem("abgs:theme", next);
+                  document.documentElement.classList.toggle("dark", next === "dark");
+                  localStorage.setItem("fontest:theme", next);
                 }}
-                className="relative h-10 w-10 rounded-sm hover:bg-accent transition-transform hover:scale-105 active:scale-95"
+                className="hover:bg-accent relative h-10 w-10 rounded-sm transition-transform hover:scale-105 active:scale-95"
               >
                 <Sun
                   size={16}
                   className={`absolute inset-0 m-auto transition-all duration-500 ${
                     s.theme === "dark"
-                      ? "rotate-0 scale-100 opacity-100"
-                      : "rotate-90 scale-0 opacity-0"
+                      ? "scale-100 rotate-0 opacity-100"
+                      : "scale-0 rotate-90 opacity-0"
                   }`}
                 />
 
@@ -195,8 +174,8 @@ export function Navbar() {
                   size={16}
                   className={`absolute inset-0 m-auto transition-all duration-500 ${
                     s.theme === "dark"
-                      ? "-rotate-90 scale-0 opacity-0"
-                      : "rotate-0 scale-100 opacity-100"
+                      ? "scale-0 -rotate-90 opacity-0"
+                      : "scale-100 rotate-0 opacity-100"
                   }`}
                 />
               </Button>

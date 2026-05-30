@@ -1,10 +1,5 @@
 import { create } from "zustand";
-import {
-  get as idbGet,
-  set as idbSet,
-  del as idbDel,
-  keys as idbKeys,
-} from "idb-keyval";
+import { get as idbGet, set as idbSet, del as idbDel, keys as idbKeys } from "idb-keyval";
 import {
   isFontFile,
   sanitizeFamily,
@@ -60,8 +55,8 @@ interface State {
   set: (patch: Partial<State>) => void;
 }
 
-const META_KEY = "abgs:fonts";
-const DATA_PREFIX = "abgs:data:";
+const META_KEY = "fontest:fonts";
+const DATA_PREFIX = "fontest:data:";
 const loadingIds = new Set<string>();
 
 export const useFontStore = create<State>((set, get) => ({
@@ -76,8 +71,7 @@ export const useFontStore = create<State>((set, get) => ({
   weight: 400,
   align: "left",
   theme:
-    typeof window !== "undefined" &&
-    localStorage.getItem("abgs:theme") === "dark"
+    typeof window !== "undefined" && localStorage.getItem("fontest:theme") === "dark"
       ? "dark"
       : "light",
   view: "grid",
@@ -209,9 +203,7 @@ export const useFontStore = create<State>((set, get) => ({
   toggleSelected: (id) => {
     const s = get().selected;
     set({
-      selected: s.includes(id)
-        ? s.filter((x) => x !== id)
-        : [...s, id].slice(-8),
+      selected: s.includes(id) ? s.filter((x) => x !== id) : [...s, id].slice(-8),
     });
   },
   clearSelected: () => set({ selected: [] }),
@@ -225,13 +217,10 @@ export const useFontStore = create<State>((set, get) => ({
       weight: 400,
       align: "left",
     }),
-  setPreview: (text: string) =>
-    set({ previewText: text, globalPreviewActive: text.trim() !== "" }),
+  setPreview: (text: string) => set({ previewText: text, globalPreviewActive: text.trim() !== "" }),
 }));
 
 export async function clearAllStorage() {
   const all = await idbKeys();
-  await Promise.all(
-    all.filter((k) => String(k).startsWith("abgs:")).map((k) => idbDel(k)),
-  );
+  await Promise.all(all.filter((k) => String(k).startsWith("fontest:")).map((k) => idbDel(k)));
 }

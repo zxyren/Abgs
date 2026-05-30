@@ -3,13 +3,13 @@ import Fuse from "fuse.js";
 import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { useFontStore } from "@/store/font-store";
-import { Navbar } from "@/components/abgs/navbar";
+import { Navbar } from "@/components/fontest/navbar";
 import { toast } from "sonner";
 import { isFontFile } from "@/lib/font-utils";
-import { FontCard } from "@/components/abgs/font-card";
-import { FontDetail } from "@/components/abgs/font-detail";
-import { CompareBar, CompareModal } from "@/components/abgs/compare-bar";
-import { GlobalPreview } from "@/components/abgs/global-preview";
+import { FontCard } from "@/components/fontest/font-card";
+import { FontDetail } from "@/components/fontest/font-detail";
+import { CompareBar, CompareModal } from "@/components/fontest/compare-bar";
+import { GlobalPreview } from "@/components/fontest/global-preview";
 
 export function Index() {
   const s = useFontStore();
